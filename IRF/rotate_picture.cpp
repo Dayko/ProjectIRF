@@ -52,7 +52,7 @@ double getMinThresholdValue(Mat ref, Mat src, int numberOfMatches){
         thresholdMinValue+=0.001;
         //        printf("thresholdMinValue %lf\n",thresholdMinValue);
         numberMatches=0;
-        Point tabPoint[numberOfMatches];
+		vector<Point> tabPoint(numberOfMatches);
         while (true)
         {
             double minval, maxval;
@@ -82,7 +82,7 @@ double getMinThresholdValue(Mat ref, Mat src, int numberOfMatches){
         //        if(numberMatches!=0)
         //         cout << "Number of Matches " << numberMatches << " / " << numberOfMatches << " " << thresholdMinValue << endl;
     }
-    imshow("azazazaz",res);
+    //imshow("azazazaz",res);
 
     return thresholdMinValue;
 }
@@ -109,11 +109,11 @@ void getSmallPicRef(Mat src_rot, Mat src_rot_refPic[]){
 
 void getCorrespondanceToRefPic(Mat reference_Pic_RGB[], Mat src_rot_refPic[], int correspondant_Ref_Pic[]){
 
-    for(int i=0; i<7; i++){
+    for(int i=0; i<NBROW; i++){
         double minThreshold_forPic=1;
         double ThresholdValue;
         int closestRefPic=0;
-        for(int j=0; j<14 ; j++){
+        for(int j=0; j<NBICONREF; j++){
             ThresholdValue = getMinThresholdValue(reference_Pic_RGB[j], src_rot_refPic[i], 1);
             //cout << "Threshold for pic " << i << " with " << reference_Pic_Names[i] << " of :" << ThresholdValue << endl;
             if(minThreshold_forPic>ThresholdValue){
