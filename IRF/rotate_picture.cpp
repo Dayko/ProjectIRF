@@ -68,7 +68,7 @@ double getMinThresholdValue(Mat ref, Mat src, int numberOfMatches){
                     }
                 }
 
-                if(differentPicture){
+				if (differentPicture && numberMatches < numberOfMatches){
                     tabPoint[numberMatches]=maxloc;
                     numberMatches++;
                     //                    printf("numberMatches %d: %d ; %d\n",numberMatches, maxloc.x, maxloc.y);

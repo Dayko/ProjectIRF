@@ -1,13 +1,13 @@
 #include "imagette.h"
 
 
-void getAllImagettes(Mat inputImage, string inputPaths[], int correspondantPathsId[], string scripter, string page, string imgFormat) {
+void getAllImagettes(string outputPath, Mat inputImage, string inputPaths[], int correspondantPathsId[], string scripter, string page, string imgFormat) {
 	int cropWidth = 1740;
 	int cropHeight = 2450;
 
 	Rect rCrop(550, 680, cropWidth, cropHeight);
 	Mat imCrop = inputImage(rCrop);
-	//imwrite("../output/_cropped.png", imCrop);
+	//imwrite(outputPath + "_cropped.png", imCrop);
 
 	for (int y = 0; y < NBROW; y++)
 	{
@@ -56,15 +56,15 @@ void getAllImagettes(Mat inputImage, string inputPaths[], int correspondantPaths
 			imThumb = imThumb(maxBoundRect);*/
 
 			// Save the final imagette
-			string fullPath = "../output/" + inputPaths[correspondantPathsId[y]] + "_" + scripter + "_" + page + "_" + to_string(y) + "_" + to_string(x) + imgFormat ;
+			string fullPath = outputPath + inputPaths[correspondantPathsId[y]] + "_" + scripter + "_" + page + "_" + to_string(y) + "_" + to_string(x) + imgFormat ;
 			imwrite(fullPath, imThumb);
 		}
 	}
 }
 
 
-void writeDescriptionFile(string label, string scripter, string page, int row, int column, IMAGETTE_SIZE size) {
-	string fullPath = "../output/" + label + "_" + scripter + "_" + page + "_" + to_string(row) + "_" + to_string(column) + ".txt" ;
+void writeDescriptionFile(string outputPath, string label, string scripter, string page, int row, int column, IMAGETTE_SIZE size) {
+	string fullPath = outputPath + label + "_" + scripter + "_" + page + "_" + to_string(row) + "_" + to_string(column) + ".txt";
 
 	ofstream file;
 	file.open(fullPath);
