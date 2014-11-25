@@ -6,7 +6,7 @@
 #include "highgui.h"
 
 #define NBROW 7
-#define NBCOLUMN 6
+#define NBCOLUMN 5
 #define NBICONREF 14
 
 using namespace cv;

@@ -25,11 +25,10 @@ int main (void) {
         cout << "Picture " << i << " is :" << reference_Pic_Names[correspondant_Ref_Pic[i]] << endl;
     }
 	
-	// Parse and write imagettes ----------------------------
+	// Parse and write imagettes and descriptions ----------------------------
+	getAllImagettes(src_rot, reference_Pic_Names, correspondant_Ref_Pic, scripterNumber, pageNumber, imgFormat);
     for(int i = 0; i < NBROW; i++) {
 		for (int j = 0; j < NBCOLUMN; j++) {
-			// TODO: get imagette output
-			writeImagetteFile(reference_Pic_Names[correspondant_Ref_Pic[i]], scripterNumber, pageNumber, i, j, imgFormat);
 			writeDescriptionFile(reference_Pic_Names[correspondant_Ref_Pic[i]], scripterNumber, pageNumber, i, j, MEDIUM_SIZE);
 		}
 	}
