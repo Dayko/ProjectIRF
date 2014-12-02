@@ -25,8 +25,10 @@ int main (void) {
 
 			// Rotate scanned page ----------------------------
 			Mat src_rot = getImageCorrectlyRotated(inputPath + scripterString + suffixPath + pageString + imgFormat);
-			Mat src_rot_refPic[7];
-			getSmallPicRef(src_rot, src_rot_refPic);
+            double angle = getFineAngle(src_rot);
+            Mat src_rot_fine = getRotatedImagedouble(src_rot, angle);
+            Mat src_rot_refPic[7];
+            getSmallPicRef(src_rot_fine, src_rot_refPic);
 
 			// Get icones correspondance ----------------------------
 			int correspondant_Ref_Pic[NBROW];

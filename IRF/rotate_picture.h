@@ -29,6 +29,12 @@ void getSmallPicRef(Mat src_rot, Mat src_rot_refPic[]);
 
 void getCorrespondanceToRefPic(Mat reference_Pic_RGB[], Mat src_rot_refPic[], int correspondant_Ref_Pic[]);
 
+double getPointsFromRefImage(Mat ref, Mat src, Point points[]);
+
+double getFineAngle(Mat src);
+
+Mat getRotatedImagedouble(Mat src, double angle);
+
 
 
 #endif // ROTATE_PICTURE_H
