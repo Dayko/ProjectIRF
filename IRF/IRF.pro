@@ -17,12 +17,14 @@ TEMPLATE = app
 
 SOURCES += main.cpp \
     rotate_picture.cpp \
-    basicMatMethods.cpp
+    basicMatMethods.cpp \
+    imagette.cpp
 
 HEADERS += \
     rotateNresize.h \
     rotate_picture.h \
-    basicMatMethods.h
+    basicMatMethods.h \
+    imagette.h
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../usr/local/lib/release/ -lopencv_core
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../usr/local/lib/debug/ -lopencv_core
