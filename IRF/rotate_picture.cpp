@@ -8,15 +8,17 @@ double getFineAngle(Mat src){
     Mat ref = loadImage("../reference/Cross-small.png");
 
     Point points[2];
-    getPointsFromRefImage(getSmallerImage(ref,2), getSmallerImage(src,2), points);
+    getPointsFromRefImage(getSmallerImage(ref,2), getSmallerImage(src,2), points, 2);
 
     int delta_x = abs(points[0].x-points[1].x);
     int delta_y = abs(points[0].y-points[1].y);
 
-    angle = atan((double)delta_y/(double)delta_x);
+    if(delta_x!=0){
+        angle = atan((double)delta_y/(double)delta_x);
 
-    cout << "X: " << delta_x << " ;  Y: " << delta_y << endl;
-    cout << "angle fine: " << angle-angle_ref << endl;
+        cout << "X: " << delta_x << " ;  Y: " << delta_y << endl;
+        cout << "angle fine: " << angle-angle_ref << endl;
+    }
 
     return angle-angle_ref;
 }
@@ -40,6 +42,9 @@ int findCorrectAngle(Mat src){
 }
 
 Mat getRotatedImagedouble(Mat src, double angle){
+    if(angle==0){
+        return src;
+    }
     // Rotate according to correction_angle variable. Note: must be opposite angle
     Point2f center((src.cols/2.0F, src.rows/2.0F));
     Mat rot_mat = getRotationMatrix2D(center, -angle, 1.0);
@@ -54,7 +59,7 @@ Mat getRotatedImage(Mat src, int angle){
     return getRotatedImagedouble(src, (double) angle);
 }
 
-double getPointsFromRefImage(Mat ref, Mat src, Point points[]){
+void getPointsFromRefImage(Mat ref, Mat src, Point points[], int MaxNumberOfMatches){
     Mat gref, gsrc;
     int numberMatches = 0;
     double thresholdMinValue = 0.05;
@@ -68,7 +73,7 @@ double getPointsFromRefImage(Mat ref, Mat src, Point points[]){
     matchTemplate(gsrc, gref, res, CV_TM_CCOEFF_NORMED);
     threshold(res, res, 0.72, 1., CV_THRESH_TOZERO);
 
-    while (true)
+    while (numberMatches<MaxNumberOfMatches)
     {
         double minval, maxval;
         Point minloc, maxloc;
