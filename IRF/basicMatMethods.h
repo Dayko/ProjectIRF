@@ -8,6 +8,7 @@
 #define NBROW 7
 #define NBCOLUMN 5
 #define NBICONREF 14
+#define NONDETECTIONLIMIT 0.2
 
 using namespace cv;
 using namespace std;
@@ -19,5 +20,8 @@ Mat getSmallerImage(Mat inputImage, int sizeReduction);
 void loadReferenceImages(string inputPaths[], Mat outputTMat[], int nb);
 
 void splitImage(Mat src, Mat output[], int height);
+
+double getPointsFromRefImage(Mat ref, Mat src, Point points[], int MaxNumberOfMatches);
+float euclideanDist(Point& p, Point& q);
 
 #endif // BASICMATMETHODS_H
