@@ -6,7 +6,7 @@
 #include "basicMatMethods.h"
 #include "time.h"
 
-#define NONDETECTIONLIMIT 0.2
+#define NONDETECTIONLIMIT 0.05
 
 using namespace cv;
 using namespace std;

@@ -5,7 +5,7 @@ int main (void) {
 	string inputPath = "../test/all-scans/w";
 	string outputPath = "../output/";
 	string imgFormat = ".png";
-	int totalNbScripters = 3;
+    int totalNbScripters = 35;
 	int totalNbPages = 22;
 
     // Get cross reference image ----------------------------
@@ -13,11 +13,11 @@ int main (void) {
 
     // Get icones correspondance images ----------------------------
     int correspondant_Ref_Pic[NBROW];
-    string reference_Pic_Names[NBICONREF+1] = { "Accident", "Bomb", "Car", "Casualty", "Electricity", "Fire", "FireBrigade", "Flood", "Gas", "Injury", "Paramedics", "Person", "Police", "RoadBlock", "ImageNotFound" };
+    string reference_Pic_Names[NBICONREF+1] = { "Accident", "Bomb", "Car", "Casualty", "Electricity", "Fire", "FireBrigade", "Flood", "Gas", "Injury", "Paramedics", "Person", "Police", "RoadBlock", "Car" };
     Mat reference_Pic_RGB[NBICONREF];
     loadReferenceImages(reference_Pic_Names, reference_Pic_RGB, NBICONREF); // Loads reference images from files
 
-	for (int scripterId = 0; scripterId < totalNbScripters; scripterId++) {
+    for (int scripterId = 0; scripterId < totalNbScripters; scripterId++) {
         string scripterString = to_string(scripterId);
 		int scripterStringLength = scripterString.length();
 		for (int i = 0; i < 3 - scripterStringLength; i++) {

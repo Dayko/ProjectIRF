@@ -80,7 +80,7 @@ Mat getRotatedImage(Mat src, double angle){
 Mat getImageCorrectlyRotated(string path, Mat refCrosses){
     Mat src = loadImage(path);
     
-    int angle = getMajorAngle(src, refCrosses);
+    int angle = getMajorAngle(getSmallerImage(src,4), getSmallerImage(refCrosses,4));
 
     if(angle==-10){
         cout << "impossible to find the crosses" << endl;
@@ -92,8 +92,8 @@ Mat getImageCorrectlyRotated(string path, Mat refCrosses){
     
     Mat src_rot = getRotatedImage(src, (double) angle);
 
-    double anglefine = getFineAngle(src_rot, refCrosses);// Get a more precise rotation angle
-    Mat src_rot_fine = getRotatedImage(src_rot, anglefine);
+    double anglefine = getFineAngle(getSmallerImage(src_rot,4), getSmallerImage(refCrosses,4));// Get a more precise rotation angle
+    Mat src_rot_fine = getRotatedImage(src, angle+anglefine);
 
     return src_rot_fine;
 }

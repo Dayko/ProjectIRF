@@ -8,7 +8,7 @@
 #define NBROW 7
 #define NBCOLUMN 5
 #define NBICONREF 14
-#define NONDETECTIONLIMIT 0.2
+#define NONDETECTIONLIMIT 0.05
 
 using namespace cv;
 using namespace std;
