@@ -90,6 +90,28 @@ double getPointsFromRefImage(Mat ref, Mat src, Point points[], int MaxNumberOfMa
     return thresholdMinValue;
 }
 
+bool isThereMatchs(Mat ref, Mat src, double thresholdMinValue){
+    Mat gref, gsrc;
+
+    double minval, maxval;
+    Point minloc, maxloc;
+
+    // Convert both images to grayscale. Just to be sure
+    cvtColor(ref, gref, CV_BGR2GRAY);
+    cvtColor(src, gsrc, CV_BGR2GRAY);
+
+    // Use cv::matchTemplate to find the matches
+    Mat res(src.rows-ref.rows+1, src.cols-ref.cols+1, CV_32FC1);
+    matchTemplate(gsrc, gref, res, CV_TM_CCOEFF_NORMED);
+    threshold(res, res, 0.72, 1., CV_THRESH_TOZERO);
+
+
+    minMaxLoc(res, &minval, &maxval, &minloc, &maxloc);
+
+    return (maxval >= thresholdMinValue);
+}
+
+
 float euclideanDist(Point& p, Point& q) {
     Point diff = p - q;
     return cv::sqrt(diff.x*diff.x + diff.y*diff.y);

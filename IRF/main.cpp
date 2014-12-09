@@ -13,7 +13,7 @@ int main (void) {
 
     // Get icones correspondance images ----------------------------
     int correspondant_Ref_Pic[NBROW];
-    string reference_Pic_Names[NBICONREF] = { "Accident", "Bomb", "Car", "Casualty", "Electricity", "Fire", "FireBrigade", "Flood", "Gas", "Injury", "Paramedics", "Person", "Police", "RoadBlock" };
+    string reference_Pic_Names[NBICONREF+1] = { "Accident", "Bomb", "Car", "Casualty", "Electricity", "Fire", "FireBrigade", "Flood", "Gas", "Injury", "Paramedics", "Person", "Police", "RoadBlock", "ImageNotFound" };
     Mat reference_Pic_RGB[NBICONREF];
     loadReferenceImages(reference_Pic_Names, reference_Pic_RGB, NBICONREF); // Loads reference images from files
 

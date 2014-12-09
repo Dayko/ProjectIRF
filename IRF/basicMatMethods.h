@@ -24,4 +24,6 @@ void splitImage(Mat src, Mat output[], int height);
 double getPointsFromRefImage(Mat ref, Mat src, Point points[], int MaxNumberOfMatches);
 float euclideanDist(Point& p, Point& q);
 
+bool isThereMatchs(Mat ref, Mat src, double thresholdMinValue);
+
 #endif // BASICMATMETHODS_H

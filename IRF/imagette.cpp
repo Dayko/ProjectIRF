@@ -86,23 +86,49 @@ void getSmallPicRef(Mat src_rot, Mat src_rot_refPic[]){
     splitImage(src_rot(myROI), src_rot_refPic,src_rot(myROI).rows/NBROW);
 }
 
+//void getCorrespondanceToRefPic(Mat reference_Pic_RGB[], Mat src_rot_refPic[], int correspondant_Ref_Pic[]){
+
+//    for(int i=0; i<NBROW; i++){
+//        double minThreshold_forPic=1;
+//        double ThresholdValue;
+//        int closestRefPic=0;
+//        for(int j=0; j<NBICONREF; j++){
+//            // Try to find crosses on the rotated image
+//            Point points[1]; //The two crosses coord.
+//            ThresholdValue = getPointsFromRefImage(reference_Pic_RGB[j], src_rot_refPic[i], points, 1);
+//            //cout << "Threshold for pic " << i << " with " << reference_Pic_Names[i] << " of :" << ThresholdValue << endl;
+//            if(minThreshold_forPic>ThresholdValue){
+//                minThreshold_forPic=ThresholdValue;
+//                closestRefPic = j;
+//                cout << i << j << ThresholdValue << endl;
+//            }
+//        }
+
+//        correspondant_Ref_Pic[i]=closestRefPic;
+
+//    }
+//}
+
 void getCorrespondanceToRefPic(Mat reference_Pic_RGB[], Mat src_rot_refPic[], int correspondant_Ref_Pic[]){
 
     for(int i=0; i<NBROW; i++){
-        double minThreshold_forPic=1;
-        double ThresholdValue;
-        int closestRefPic=0;
-        for(int j=0; j<NBICONREF; j++){
-            // Try to find crosses on the rotated image
-            Point points[1]; //The two crosses coord.
-            ThresholdValue = getPointsFromRefImage(reference_Pic_RGB[j], src_rot_refPic[i], points, 1);
-            //cout << "Threshold for pic " << i << " with " << reference_Pic_Names[i] << " of :" << ThresholdValue << endl;
-            if(minThreshold_forPic>ThresholdValue){
-                minThreshold_forPic=ThresholdValue;
-                closestRefPic = j;
+        double thresholdValue=0;
+        bool imageFound=false;
+
+        while(thresholdValue < NONDETECTIONLIMIT && !imageFound){
+            thresholdValue+=0.01;
+            for(int j=0; j<NBICONREF && !imageFound; j++){
+                if(isThereMatchs(reference_Pic_RGB[j], src_rot_refPic[i], thresholdValue)){
+                    cout << "image found: " << i << " ; "<< j << " ; "<< thresholdValue << " ; "<< endl;
+                    correspondant_Ref_Pic[i]=j;
+                    imageFound=true;
+                }
             }
         }
-        correspondant_Ref_Pic[i]=closestRefPic;
+        if(!imageFound){
+            cout << "image not found: " << i << endl;
+            correspondant_Ref_Pic[i]=NBICONREF;
+        }
 
     }
 }
