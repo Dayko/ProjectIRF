@@ -17,6 +17,21 @@ int main (void) {
     Mat reference_Pic_RGB[NBICONREF];
     loadReferenceImages(reference_Pic_Names, reference_Pic_RGB, NBICONREF); // Loads reference images from files
 
+	string fullPath = outputPath + "/arff/test.arff";
+
+	ofstream file;
+	file.open(fullPath);
+
+	file << "@RELATION imageRelationships" << endl;
+	file << "@ATTRIBUTE label {Accident, Bomb, Car, Casualty, Electricity, Fire, FireBrigade, Flood, Gas, Injury, Paramedics, Person, Police,RoadBlock, Car}" << endl;
+	file << "@ATTRIBUTE form numeric" << endl;
+	file << "@ATTRIBUTE scripter numeric" << endl;
+	file << "@ATTRIBUTE page numeric" << endl;
+	file << "@ATTRIBUTE row numeric" << endl;
+	file << "@ATTRIBUTE column numeric" << endl;
+	file << "@ATTRIBUTE size numeric" << endl;
+	file << "@DATA" << endl;
+
     for (int scripterId = 0; scripterId < totalNbScripters; scripterId++) {
         string scripterString = to_string(scripterId);
 		int scripterStringLength = scripterString.length();
@@ -49,12 +64,14 @@ int main (void) {
 			for (int i = 0; i < NBROW; i++) {
 				for (int j = 0; j < NBCOLUMN; j++) {
 					writeDescriptionFile(outputPath, reference_Pic_Names[correspondant_Ref_Pic[i]], scripterString, pageString, i, j, MEDIUM_SIZE);
+					file << reference_Pic_Names[correspondant_Ref_Pic[i]] << "," << scripterString << "," << scripterString << "," << pageString << "," << i << "," << j << "," << MEDIUM_SIZE << endl;
 				}
 			}
-
+			cout << "Arff-file updated : "
 			cout << "Page result saved : " << outputPath << scripterString << suffixPath << pageString << imgFormat << " (" << scripterId << "/" << totalNbScripters << ")" << endl << endl;
 		}
 	}
+	file.close();
 
     waitKey(0);
 }
