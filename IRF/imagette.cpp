@@ -1,12 +1,23 @@
 #include "imagette.h"
 
-
 void getAllImagettes(string outputPath, Mat inputImage, string inputPaths[], int correspondantPathsId[], string scripter, string page, string imgFormat) {
+	
+	//Get the top right cross
+	Rect rTopCrop(0, 0, inputImage.size().width, 570);
+	Mat imCropTop = inputImage(rTopCrop);
+	// Get cross reference image ----------------------------
+	Mat refCrosses = loadImage("../reference/Cross-small.png");
+	Point cross[1];
+	if (getPointsFromRefImage(refCrosses, imCropTop, cross, 1) > NONDETECTIONLIMIT){
+		cout << "Croix en haut à droite non trouvée. Ce message n'apparaîtra jamais" << endl;
+	}
+
 	int cropWidth = 1740;
 	int cropHeight = 2450;
-
-	Rect rCrop(550, 680, cropWidth, cropHeight);
+	//Crop the imagettes zones, taking into account the top right cross
+	Rect rCrop((cross[0].x-1587), (cross[0].y+270), cropWidth, cropHeight);
 	Mat imCrop = inputImage(rCrop);
+
 	//imwrite(outputPath + "_cropped.png", imCrop);
 
 	for (int y = 0; y < NBROW; y++)
