@@ -15,7 +15,7 @@ using namespace std;
 double getFineAngle(Mat src, Mat ref);
 int getMajorAngle(Mat src, Mat ref);
 Mat getRotatedImage(Mat src, double angle);
-Mat getImageCorrectlyRotated(string path, Mat refCrosses);
+bool getImageCorrectlyRotated(string path, Mat refCrosses, Mat *src_rotated);
 
 
 
