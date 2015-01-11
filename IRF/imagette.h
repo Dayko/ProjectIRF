@@ -15,9 +15,9 @@ using namespace cv;
 
 
 enum IMAGETTE_SIZE {
-	SMALL_SIZE,
-	MEDIUM_SIZE,
-	LARGE_SIZE
+    SMALL_SIZE,
+    MEDIUM_SIZE,
+    LARGE_SIZE
 };
 
 void getAllImagettes(string outputPath, Mat inputImage, string inputPaths[], int correspondantPathsId[], string scripter, string page, string imgFormat);

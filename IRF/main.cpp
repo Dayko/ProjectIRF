@@ -1,11 +1,12 @@
 #include "main.h"
+#include "omp.h"
 
 
 int main (void) {
     string inputPath = "../test/all-scans/w";
     string outputPath = "../output/";
     string imgFormat = ".png";
-    int totalNbScripters = 27;
+    int totalNbScripters = 35;
     int totalNbPages = 22;
 
     // Get cross reference image ----------------------------
@@ -17,20 +18,6 @@ int main (void) {
     Mat reference_Pic_RGB[NBICONREF];
     loadReferenceImages(reference_Pic_Names, reference_Pic_RGB, NBICONREF); // Loads reference images from files
 
-    string fullPath = outputPath + "/arff/test.arff";
-
-    ofstream file;
-    file.open(fullPath);
-
-    file << "@RELATION imageRelationships" << endl;
-    file << "@ATTRIBUTE label {Accident, Bomb, Car, Casualty, Electricity, Fire, FireBrigade, Flood, Gas, Injury, Paramedics, Person, Police,RoadBlock}" << endl;
-    file << "@ATTRIBUTE form numeric" << endl;
-    file << "@ATTRIBUTE scripter numeric" << endl;
-    file << "@ATTRIBUTE page numeric" << endl;
-    file << "@ATTRIBUTE row numeric" << endl;
-    file << "@ATTRIBUTE column numeric" << endl;
-    file << "@ATTRIBUTE size numeric" << endl;
-    file << "@DATA" << endl;
 
     for (int scripterId = 0; scripterId < totalNbScripters; scripterId++) {
         string scripterString = to_string(scripterId);
@@ -40,7 +27,8 @@ int main (void) {
         }
         string suffixPath = "-scans/" + scripterString;
 
-        for (int pageId = 9; pageId < totalNbPages; pageId++) {
+        #pragma omp parallel for
+        for (int pageId = 0; pageId < totalNbPages; pageId++) {
             string pageString = to_string(pageId);
 
             int pageStringLength = pageString.length();
@@ -58,9 +46,9 @@ int main (void) {
                 getSmallPicRef(src_rot, src_rot_refPic);
                 getCorrespondanceToRefPic(reference_Pic_RGB, src_rot_refPic, correspondant_Ref_Pic);
 
-                for (int i = 0; i < NBROW; i++){
-                    cout << "Picture " << i << " is :" << reference_Pic_Names[correspondant_Ref_Pic[i]] << endl;
-                }
+//                for (int i = 0; i < NBROW; i++){
+//                    cout << "Picture " << i << " is :" << reference_Pic_Names[correspondant_Ref_Pic[i]] << endl;
+//                }
 
                 // Parse and write imagettes and descriptions ----------------------------
                 getAllImagettes(outputPath, src_rot, reference_Pic_Names, correspondant_Ref_Pic, scripterString, pageString, imgFormat);
@@ -70,11 +58,9 @@ int main (void) {
                     }
                 }
 
-                cout << "Arff-file updated : " << endl;
-                cout << "Page result saved : " << outputPath << scripterString << suffixPath << pageString << imgFormat << " (" << scripterId << "/" << totalNbScripters << ")" << endl << endl;
+                cout << "Page result saved : " << outputPath << scripterString << suffixPath << pageString << imgFormat << " (" << scripterId << "/" << totalNbScripters << ")" << endl;
             }
         }
-        file.close();
     }
 
     waitKey(0);

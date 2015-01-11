@@ -2,7 +2,7 @@
 
 Mat loadImage(string imName){
     // Charge et affiche l'image
-    cout << "Loading image: " << imName << endl;
+//    cout << "Loading image: " << imName << endl;
     Mat im = imread(imName);
     if(im.data == NULL){
         cerr << "Image not found: "<< imName << endl;
@@ -77,7 +77,7 @@ double getPointsFromRefImage(Mat ref, Mat src, Point points[], int MaxNumberOfMa
                 // If different ... we add the point to the list of found points
                 if(differentPicture){
                     points[numberMatches]=maxloc;
-                    cout << "point found" << maxloc.x << " ; " << maxloc.y << endl;
+//                    cout << "point found" << maxloc.x << " ; " << maxloc.y << endl;
                     numberMatches++;
                 }
 
@@ -116,4 +116,3 @@ float euclideanDist(Point& p, Point& q) {
     Point diff = p - q;
     return cv::sqrt(diff.x*diff.x + diff.y*diff.y);
 }
-

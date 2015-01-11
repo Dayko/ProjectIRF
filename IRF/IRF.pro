@@ -4,15 +4,20 @@
 #
 #-------------------------------------------------
 
-QT       += core
-
-QT       -= gui
-
 TARGET = IRF
 CONFIG   += console
 CONFIG   -= app_bundle
+CONFIG -= qt
+CONFIG += C++11
 
 TEMPLATE = app
+
+
+QMAKE_CFLAGS_RELEASE += -fopenmp
+QMAKE_CFLAGS_DEBUG += -fopenmp
+
+QMAKE_CXXFLAGS+= -fopenmp
+QMAKE_LFLAGS +=  -fopenmp
 
 
 SOURCES += main.cpp \
