@@ -1,0 +1,65 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2014-12-16T14:54:37
+#
+#-------------------------------------------------
+
+QT       += core
+
+QT       -= gui
+
+TARGET = IRF_Part2
+CONFIG   += console
+CONFIG   -= app_bundle
+
+TEMPLATE = app
+
+
+SOURCES += main.cpp
+
+LIBS += -fopenmp
+
+QMAKE_CFLAGS_RELEASE += -fopenmp
+QMAKE_CFLAGS_DEBUG += -fopenmp
+
+
+QMAKE_CXXFLAGS+= -fopenmp
+QMAKE_LFLAGS +=  -fopenmp
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../usr/local/lib/release/ -lopencv_core
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../usr/local/lib/debug/ -lopencv_core
+else:unix: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lopencv_core
+
+INCLUDEPATH += $$PWD/../../../../../usr/local/include
+DEPENDPATH += $$PWD/../../../../../usr/local/include
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../usr/local/lib/release/ -lopencv_highgui
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../usr/local/lib/debug/ -lopencv_highgui
+else:unix: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lopencv_highgui
+
+INCLUDEPATH += $$PWD/../../../../../usr/local/lib
+DEPENDPATH += $$PWD/../../../../../usr/local/lib
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../usr/local/lib/release/ -lopencv_flann
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../usr/local/lib/debug/ -lopencv_flann
+else:unix: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lopencv_flann
+
+INCLUDEPATH += $$PWD/../../../../../usr/local/include
+DEPENDPATH += $$PWD/../../../../../usr/local/include
+
+unix: CONFIG += link_pkgconfig
+unix: PKGCONFIG += opencv
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../usr/local/lib/release/ -lopencv_features2d
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../usr/local/lib/debug/ -lopencv_features2d
+else:unix: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lopencv_features2d
+
+INCLUDEPATH += $$PWD/../../../../../usr/local/include
+DEPENDPATH += $$PWD/../../../../../usr/local/include
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../../../usr/local/lib/release/ -lopencv_imgproc
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../../../usr/local/lib/debug/ -lopencv_imgproc
+else:unix: LIBS += -L$$PWD/../../../../../usr/local/lib/ -lopencv_imgproc
+
+INCLUDEPATH += $$PWD/../../../../../usr/local/include
+DEPENDPATH += $$PWD/../../../../../usr/local/include
