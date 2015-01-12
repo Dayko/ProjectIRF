@@ -1,5 +1,57 @@
 #include "imagette.h"
 
+Mat preProcess(Mat inputImage)
+{
+	Mat im_out = inputImage;
+	//Grayscale
+	cvtColor(im_out, im_out, CV_BGR2GRAY);
+	//Opening to reduce possible noise (erosion+dilation)
+	int morph_size = 1;
+	Mat element = getStructuringElement(0, Size(2 * morph_size + 1, 2 * morph_size + 1), Point(morph_size, morph_size));
+	morphologyEx(im_out, im_out, 1, element);
+
+	//Closing to strenghten the lines again and to fill unwanted gaps
+	morphologyEx(im_out, im_out, 2, element);
+
+	//Median filter
+	for (int i = 1; i < 3; i = i + 2)
+	{
+		medianBlur(im_out, im_out, i);
+	}
+
+	//TODO: Center each figure and normalize scaling?
+
+	//Mat threshold_output;
+	//vector<vector<Point> > contours;
+	//vector<Vec4i> hierarchy;
+
+	//threshold(im_out, threshold_output, 100, 200, CV_THRESH_BINARY_INV);
+
+	//findContours(threshold_output, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
+	///// Find the rotated rectangles
+	//vector<RotatedRect> minRect(contours.size());
+	//for (int i = 0; i < contours.size(); i++)
+	//{
+	//	minRect[i] = minAreaRect(Mat(contours[i]));
+	//}
+
+	///// Draw contours + rotated rects + ellipses
+	//Mat drawing = Mat::zeros(threshold_output.size(), CV_8UC3);
+	//for (int i = 0; i< contours.size(); i++)
+	//{
+	//	Scalar color = Scalar(0,255,0);
+	//	// contour
+	//	drawContours(drawing, contours, i, color, 1, 8, vector<Vec4i>(), 0, Point());
+	//	// rotated rectangle
+
+	//	Point2f rect_points[4]; minRect[i].points(rect_points);
+
+	//	for (int j = 0; j < 4; j++)
+	//		line(im_out, rect_points[j], rect_points[(j + 1) % 4], color, 1, 8);
+	//}
+
+	return im_out;
+}
 
 void getAllImagettes(string outputPath, Mat inputImage, string inputPaths[], int correspondantPathsId[], string scripter, string page, string imgFormat) {
     int cropWidth = 1740;
@@ -55,6 +107,8 @@ void getAllImagettes(string outputPath, Mat inputImage, string inputPaths[], int
 
             imThumb = imThumb(maxBoundRect);*/
 
+			//Do some pre-processing
+			imThumb = preProcess(imThumb);
             // Save the final imagette
             string fullPath = outputPath + inputPaths[correspondantPathsId[y]] + "_" + scripter + "_" + page + "_" + to_string(y) + "_" + to_string(x) + imgFormat ;
             imwrite(fullPath, imThumb);
