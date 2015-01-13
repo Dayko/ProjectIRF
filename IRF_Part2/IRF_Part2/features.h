@@ -12,9 +12,13 @@
 using namespace std;
 using namespace cv;
 
-int featureHistogram(Mat im, int tab[]);
-int featureBW(Mat im, int tab[]);
-int featureNbHorizontal(Mat im, int tab[]);
-int featureNbVertical(Mat im, int tab[]);
+int featureHistogram(Mat im, float tab[]);
+int featureBW(Mat im, float tab[]);
+int featureNbHorizontal(Mat im, float tab[]);
+int featureNbVertical(Mat im, float tab[]);
+int featureBoundingRatio(Mat im, float tab[]);
+int featureNbBlackPixelLinesCols(Mat im, float tab[]);
+int featureHoughLines(Mat im, float tab[]);
+int featureHoughCircles(Mat im, float tab[]);
 
 #endif // IMAGETTE_H
