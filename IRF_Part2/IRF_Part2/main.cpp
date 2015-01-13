@@ -8,7 +8,7 @@
 
 #define NBICONS 14
 #define NBFOLDERS 3//35
-#define NBSHEETS 2//22
+#define NBSHEETS 22
 #define NBROW 7
 #define NBCOLUMNS 5
 #define NBFEATURES 9
@@ -18,13 +18,13 @@ using namespace std;
 
 string inputPath = "../output/";
 string imgFormat = ".png";
-string pathToArff = "../arff/test3.arff";
+string pathToArff = "../arff/test4.arff";
 
 string reference_Pic_Names[NBICONS] = { "Accident", "Bomb", "Car", "Casualty", "Electricity", "Fire", "FireBrigade", "Flood", "Gas", "Injury", "Paramedics", "Person", "Police", "RoadBlock"};
-string featureName[NBFEATURES] = {"feat1", "feat2", "feat3", "feat4", "feat5", "feat6", "feat7", "feat8", "feat9"};
+string featureName[NBFEATURES] = {"RatioBW", "NbLinesBlackPixels", "NbColsBlackPixels", "HoughLines", "HoughCircles", "feat6", "feat7", "feat8", "feat9"};
 
 Mat preprocessing(Mat im);
-int computeFeatures(Mat im, int tab[]);
+int computeFeatures(Mat im, float tab[]);
 
 int main(int argc, char *argv[])
 {
@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
                                 Mat impreproc = preprocessing(im);
 
                                 // COMPUTE FEATURES
-                                int featureResults[100];
+								float featureResults[100];
                                 int nbResults = computeFeatures(im, featureResults);
 
                                 // ADD VALUE TO THE ARFF FILE
@@ -109,7 +109,6 @@ int main(int argc, char *argv[])
 		cerr << "Error creating file!" << endl;
 	}
 
-    system("pause");
 	return 0;
 }
 
@@ -118,16 +117,15 @@ Mat preprocessing(Mat im){
     return im;
 }
 
-int computeFeatures(Mat im, int tab[]){
+int computeFeatures(Mat im, float tab[]){
 	int size = 0;
 
-	size += featureHistogram(im, tab + size);
 	size += featureBW(im, tab + size);
-	size += featureNbHorizontal(im, tab + size);
-	size += featureNbVertical(im, tab + size);
+	size += featureNbBlackPixelLinesCols(im, tab + size);
+	size += featureHoughLines(im, tab + size);
+	size += featureHoughCircles(im, tab + size);
 
-    /*for(int i=0; i<9; i++){
-        tab[i]=i;
-    }*/
+	//size += featureHistogram(im, tab + size); // TODO
+
     return size;
 }
