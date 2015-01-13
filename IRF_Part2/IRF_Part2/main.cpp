@@ -121,8 +121,6 @@ int computeFeatures(Mat im, float tab[]){
 	int size = 0;
 
 	size += featureBW(im, tab + size);
-	size += featureNbHorizontal(im, tab + size);
-	size += featureNbVertical(im, tab + size);
 	size += featureBoundingRatio(im, tab + size);
 	size += featureNbBlackPixelLinesCols(im, tab + size);
 	size += featureHoughLines(im, tab + size);
