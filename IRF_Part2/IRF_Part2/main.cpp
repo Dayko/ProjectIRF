@@ -8,7 +8,7 @@
 
 #define NBICONS 14
 #define NBFOLDERS 3//35
-#define NBSHEETS 22
+#define NBSHEETS 22//22
 #define NBROW 7
 #define NBCOLUMNS 5
 #define NBFEATURES 9
@@ -21,7 +21,7 @@ string imgFormat = ".png";
 string pathToArff = "../arff/test4.arff";
 
 string reference_Pic_Names[NBICONS] = { "Accident", "Bomb", "Car", "Casualty", "Electricity", "Fire", "FireBrigade", "Flood", "Gas", "Injury", "Paramedics", "Person", "Police", "RoadBlock"};
-string featureName[NBFEATURES] = {"RatioBW", "NbLinesBlackPixels", "NbColsBlackPixels", "HoughLines", "HoughCircles", "feat6", "feat7", "feat8", "feat9"};
+string featureName[NBFEATURES] = {"RatioBW", "NbLinesBlackPixels", "NbColsBlackPixels", "HoughLines", "HoughCircles", "BoundingBoxNumber", "BoundingBoxRatio", "feat8", "feat9"};
 
 Mat preprocessing(Mat im);
 int computeFeatures(Mat im, float tab[]);
@@ -121,10 +121,10 @@ int computeFeatures(Mat im, float tab[]){
 	int size = 0;
 
 	size += featureBW(im, tab + size);
-	size += featureBoundingRatio(im, tab + size);
 	size += featureNbBlackPixelLinesCols(im, tab + size);
 	size += featureHoughLines(im, tab + size);
 	size += featureHoughCircles(im, tab + size);
+	size += featureBoundingRatio(im, tab + size);
 	//size += featureHistogram(im, tab + size); // TODO
     return size;
 }

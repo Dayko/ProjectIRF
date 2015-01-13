@@ -148,7 +148,7 @@ int featureBoundingRatio(Mat im, float tab[]){
 
 	// blur the image a little
 	blur(im_gray, im_gray, Size(3, 3));
-
+	
 	/// Detect edges using Threshold
 	Mat threshold_output;
 	int thresh = 253;
@@ -167,29 +167,60 @@ int featureBoundingRatio(Mat im, float tab[]){
 		approxPolyDP(Mat(contours[i]), contours_poly[i], 3, true);
 		boundRect[i] = boundingRect(Mat(contours_poly[i]));
 	}
-	/// Return in the table of the number of bounding boxes
-	vector<vector<Point> > contoursToMerge;
-	cout << "Size of image : Height - " << im.size().height << " -- Width - " << im.size().width << endl;
+
+	vector<Rect> rectangleToMerge;
+	//cout << "Size of image : Height - " << im.size().height << " -- Width - " << im.size().width << endl;
 	for (int i = 0; i < boundRect.size(); i++)
 	{
-		/*Scalar color = Scalar(255, 0, 255);
-		drawContours(im, contours_poly, i, color, 1, 8, vector<Vec4i>(), 0, Point());
-		rectangle(im, boundRect[i].tl(), boundRect[i].br(), color, 2, 8, 0);*/
-
 		//test of the Rectangle :
 		// If it's approximatly equal to the dimension, in height or width, of the whole image, then it's probably the box of the whole image
-		// or it's a wrong box wich result of a remaining border of an imagette.
-		// We also discard too small rectangles
-		cout << " Height : " << boundRect[i].height << " -- Width : " << boundRect[i].width << endl;
-		cout << " Area : " << boundRect[i].area << endl;
-		/*if (((boundRect[i].height - im.size().height) < im.size().height*0.05)
-			&& ((boundRect[i].width - im.size().width) < im.size().width*0.05)
-			&& boundRect)*/
-
+		// or it's a wrong box wich result of a remaining border of an imagette. We also check it if the ratio of the box is anormal (too small)
+		// We also discard too small rectangles and too big (another check for the whole image bouding box)
+		//cout << " Height : " << boundRect[i].height << " -- Width : " << boundRect[i].width << endl;
+		
+		if (!((im.size().height - boundRect[i].height) < im.size().height*0.02)
+			&& !((im.size().width - boundRect[i].width) < im.size().width*0.02)
+			&& boundRect[i].area() < 57800 && boundRect[i].area() > 2000
+			&& !(((float)(boundRect[i].height) / (float)(boundRect[i].width)) < 0.08 || ((float)(boundRect[i].width) / (float)(boundRect[i].height)) < 0.08)){
+			rectangleToMerge.push_back(boundRect[i]);
+		}
 	}
+	/* Impression de des bounding boxes que l'on considère valides */
+	/*for (int i = 0; i < rectangleToMerge.size(); i++){
+		Scalar color = Scalar(0, 255, 0);
+		rectangle(im, rectangleToMerge[i].tl(), rectangleToMerge[i].br(), color, 2, 8, 0);
+	}*/
 
-	/*int i = rand() % 500;
-	imwrite("../output/" + to_string(i) +".png", im);*/
+	if (rectangleToMerge.size() == 0){
+		tab[0] = NULL;
+		tab[1] = NULL;
+	}
+	else{
+		tab[0] = rectangleToMerge.size();
+		int minXleft = 1000;
+		int maxXright = 0;
+		int minYtop = 1000;
+		int maxYbottom = 0;
+		for (vector<Rect>::iterator it = rectangleToMerge.begin(); it != rectangleToMerge.end(); it++){
+			if ((*it).x < minXleft)
+				minXleft = (*it).x;
+			if ((*it).y < minYtop)
+				minYtop = (*it).y;
+			if (((*it).x + (*it).width) > maxXright)
+				maxXright = (*it).x + (*it).width;
+			if (((*it).y + (*it).height) > maxYbottom)
+				maxYbottom = (*it).y + (*it).height;
+		}
+		/* Impression de la bounding box générale en bleu */
+		// rectangle(im, Point(minXleft, minYtop), Point(maxXright, maxYbottom), Scalar(255, 0, 0));
+		tab[1] = (float)(maxXright - minXleft) / (float)(maxYbottom - minYtop);
+		//cout << tab[1] << endl;
+	}
+		/* Enregistrement de l'image
+		int i = rand() % 500;
+		string path2 = to_string(i);// +"-" + to_string(rectangleToMerge.size());
+		imwrite("../output2/" + path2 + ".png", im);*/
+	return 2;
 }
 
 int featureHoughCircles(Mat im, float tab[])

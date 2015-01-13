@@ -1,0 +1,49 @@
+@RELATION imagette
+
+@ATTRIBUTE label {Accident, Bomb, Car, Casualty, Electricity, Fire, FireBrigade, Flood, Gas, Injury, Paramedics, Person, Police, RoadBlock}
+@ATTRIBUTE RatioBW numeric
+@ATTRIBUTE NbLinesBlackPixels numeric
+@ATTRIBUTE NbColsBlackPixels numeric
+@ATTRIBUTE HoughLines numeric
+@ATTRIBUTE HoughCircles numeric
+@ATTRIBUTE feat6 numeric
+@ATTRIBUTE feat7 numeric
+@ATTRIBUTE feat8 numeric
+@ATTRIBUTE feat9 numeric
+
+@DATA
+Accident, 2, 1
+Accident, 3, 0.914634
+Accident, 3, 0.759259
+Accident, 2, 0.88
+Accident, 2, 0.881188
+Bomb, 2, 0.455959
+Bomb, 2, 0.494565
+Bomb, 2, 0.431472
+Bomb, 3, 0.535714
+Bomb, 2, 0.463687
+Car, 2, 2.04762
+Car, 2, 2.45556
+Car, 2, 2.24719
+Car, 2, 2.32927
+Car, 2, 1.87
+Casualty, 2, 0.571429
+Casualty, 1, 0.533784
+Casualty, 2, 0.6125
+Casualty, 1, 0.460606
+Casualty, 2, 0.544872
+Electricity, 1, 0.438596
+Electricity, 2, 0.329897
+Electricity, 1, 0.333333
+Electricity, 2, 0.393443
+Electricity, 2, 0.47561
+Fire, 2, 0.688889
+Fire, 2, 0.533708
+Fire, 2, 0.65896
+Fire, 2, 0.564593
+Fire, 1, 0.735
+FireBrigade, 2, 1.35385
+FireBrigade, 2, 0.884393
+FireBrigade, 1, 0.816456
+FireBrigade, 3, 0.981132
+FireBrigade, 3, 0.925287
