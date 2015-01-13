@@ -1,13 +1,14 @@
 #include "cv.h"
 #include "highgui.h"
 #include "omp.h"
+#include "features.h"
 #include <fstream>
 #include <iostream>
 
 
 #define NBICONS 14
-#define NBFOLDERS 35
-#define NBSHEETS 22
+#define NBFOLDERS 3//35
+#define NBSHEETS 2//22
 #define NBROW 7
 #define NBCOLUMNS 5
 #define NBFEATURES 9
@@ -23,7 +24,7 @@ string reference_Pic_Names[NBICONS] = { "Accident", "Bomb", "Car", "Casualty", "
 string featureName[NBFEATURES] = {"feat1", "feat2", "feat3", "feat4", "feat5", "feat6", "feat7", "feat8", "feat9"};
 
 Mat preprocessing(Mat im);
-int computeFeatures(int tab[]);
+int computeFeatures(Mat im, int tab[]);
 
 int main(int argc, char *argv[])
 {
@@ -38,8 +39,8 @@ int main(int argc, char *argv[])
         file << "@RELATION imagette" << endl << endl;
         file << "@ATTRIBUTE label {Accident, Bomb, Car, Casualty, Electricity, Fire, FireBrigade, Flood, Gas, Injury, Paramedics, Person, Police, RoadBlock}" << endl;
 
-        for(int i=0; i<NBFEATURES; i++){
-            file << "@ATTRIBUTE " << featureName[i] << " numeric" << endl;
+        for(int f=0; f<NBFEATURES; f++){
+            file << "@ATTRIBUTE " << featureName[f] << " numeric" << endl;
         }
 
         file << endl;
@@ -60,7 +61,7 @@ int main(int argc, char *argv[])
                 for(int k=0; k<NBSHEETS; k++){
                     string pageString = to_string(k);
                     int pageStringLength = pageString.length();
-                    for (int i = 0; i < 2 - pageStringLength; i++) {
+                    for (int p = 0; p < 2 - pageStringLength; p++) {
                         pageString = "0" + pageString;
                     }
 
@@ -73,7 +74,7 @@ int main(int argc, char *argv[])
                                 cantopen++;
                             } else {
                                 openok++;
-
+								
                                 std::stringstream sstm;
                                 sstm << reference_Pic_Names[i];
 
@@ -82,11 +83,11 @@ int main(int argc, char *argv[])
 
                                 // COMPUTE FEATURES
                                 int featureResults[100];
-                                int nbResults = computeFeatures(featureResults);
+                                int nbResults = computeFeatures(im, featureResults);
 
                                 // ADD VALUE TO THE ARFF FILE
-                                for(int k=0; k<nbResults; k++){
-                                    sstm << ", " << featureResults[k];
+                                for(int rs=0; rs<nbResults; rs++){
+                                    sstm << ", " << featureResults[rs];
                                 }
                                 sstm << endl;
 
@@ -94,20 +95,22 @@ int main(int argc, char *argv[])
                                 file << sstm.str();
 
 
-                        }
-                    }
-                }
-            }
-        }
-        cout << "Computing " << reference_Pic_Names[i] << "... There are : " << cantopen << " impossible to open and " << openok << " images open" << endl;
-    }
+							}
+						}
+					}
+				}
+			}
+			cout << "Computing " << reference_Pic_Names[i] << "... There are : " << cantopen << " impossible to open and " << openok << " images open" << endl;
+		}
 
-    //CLOSE ARFF FILE
-    file.close();
-} else {
-cerr << "Error creating file!" << endl;
-}
-return 0;
+		//CLOSE ARFF FILE
+		file.close();
+	} else {
+		cerr << "Error creating file!" << endl;
+	}
+
+    system("pause");
+	return 0;
 }
 
 
@@ -115,9 +118,16 @@ Mat preprocessing(Mat im){
     return im;
 }
 
-int computeFeatures(int tab[]){
-    for(int i=0; i<9; i++){
+int computeFeatures(Mat im, int tab[]){
+	int size = 0;
+
+	size += featureHistogram(im, tab + size);
+	size += featureBW(im, tab + size);
+	size += featureNbHorizontal(im, tab + size);
+	size += featureNbVertical(im, tab + size);
+
+    /*for(int i=0; i<9; i++){
         tab[i]=i;
-    }
-    return 9;
+    }*/
+    return size;
 }

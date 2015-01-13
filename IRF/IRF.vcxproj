@@ -84,15 +84,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\IRF_Part2\IRF_Part2\features.cpp" />
+    <ClCompile Include="..\IRF_Part2\IRF_Part2\main.cpp" />
     <ClCompile Include="basicMatMethods.cpp" />
     <ClCompile Include="imagette.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="rotate_picture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\IRF_Part2\IRF_Part2\features.h" />
     <ClInclude Include="basicMatMethods.h" />
     <ClInclude Include="imagette.h" />
-    <ClInclude Include="main.h" />
     <ClInclude Include="rotate_picture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
