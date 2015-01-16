@@ -240,3 +240,38 @@ int featureHoughCircles(Mat im, float tab[])
 
 	return 1;
 }
+
+int featureGravityCenter(Mat input_image, float tab[])
+{
+	cvtColor(input_image, input_image, CV_RGB2GRAY);
+
+	//-- Step 1: Detect the keypoints using SURF Detector
+	int minHessian = 400;
+
+	SurfFeatureDetector detector(minHessian);
+
+	std::vector<KeyPoint> keypoints_1;
+
+	detector.detect(input_image, keypoints_1);
+
+	//-- Draw keypoints
+	//Mat img_keypoints_1;
+	//drawKeypoints(input_image, keypoints_1, img_keypoints_1, Scalar::all(-1), DrawMatchesFlags::DEFAULT);
+
+	//-- Show detected (drawn) keypoints
+	//imshow("Keypoints 1", img_keypoints_1);
+	//waitKey(0);
+	
+	Point2f cen(0, 0);
+	for (size_t i = 0; i<keypoints_1.size(); i++)
+	{
+		cen.x += keypoints_1[i].pt.x;
+		cen.y += keypoints_1[i].pt.y;
+	}
+	cen.x /= keypoints_1.size();
+	cen.y /= keypoints_1.size();
+	tab[0] = cen.x;
+	tab[1] = cen.y;
+
+	return 4;
+}

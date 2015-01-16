@@ -125,6 +125,7 @@ int computeFeatures(Mat im, float tab[]){
 	size += featureHoughLines(im, tab + size);
 	size += featureHoughCircles(im, tab + size);
 	size += featureBoundingRatio(im, tab + size);
+	size += featureGravityCenter(im, tab + size);
 	//size += featureHistogram(im, tab + size); // TODO
     return size;
 }
