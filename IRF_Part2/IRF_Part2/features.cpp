@@ -273,5 +273,5 @@ int featureGravityCenter(Mat input_image, float tab[])
 	tab[0] = cen.x;
 	tab[1] = cen.y;
 
-	return 4;
+	return 2;
 }

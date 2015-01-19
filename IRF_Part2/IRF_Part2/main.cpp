@@ -21,7 +21,7 @@ string imgFormat = ".png";
 string pathToArff = "../arff/test4.arff";
 
 string reference_Pic_Names[NBICONS] = { "Accident", "Bomb", "Car", "Casualty", "Electricity", "Fire", "FireBrigade", "Flood", "Gas", "Injury", "Paramedics", "Person", "Police", "RoadBlock"};
-string featureName[NBFEATURES] = {"RatioBW", "NbLinesBlackPixels", "NbColsBlackPixels", "HoughLines", "HoughCircles", "BoundingBoxNumber", "BoundingBoxRatio", "feat8", "feat9"};
+string featureName[NBFEATURES] = {"RatioBW", "NbLinesBlackPixels", "NbColsBlackPixels", "HoughLines", "HoughCircles", "BoundingBoxNumber", "BoundingBoxRatio", "GravityCenterX", "GravityCenterY"};
 
 Mat preprocessing(Mat im);
 int computeFeatures(Mat im, float tab[]);
