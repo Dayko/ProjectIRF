@@ -23,6 +23,7 @@ int featureBoundingRatio(Mat im, float tab[]);
 int featureNbBlackPixelLinesCols(Mat im, float tab[]);
 int featureHoughLines(Mat im, float tab[]);
 int featureHoughCircles(Mat im, float tab[]);
-int featureGravityCenter(Mat input_image, float tab[]);
+int featureGravityCenter(Mat im, float tab[]);
+int featureCannyEdge(Mat im, float tab[]);
 
 #endif // IMAGETTE_H

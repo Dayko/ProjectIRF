@@ -11,7 +11,9 @@
 #define NBSHEETS 22//22
 #define NBROW 7
 #define NBCOLUMNS 5
-#define NBFEATURES 9
+#define NBFEATURES 10
+#define NBBLOCKS 9
+#define BLOCKSSIDESIZE 3
 
 using namespace cv;
 using namespace std;
@@ -21,7 +23,7 @@ string imgFormat = ".png";
 string pathToArff = "../arff/test4.arff";
 
 string reference_Pic_Names[NBICONS] = { "Accident", "Bomb", "Car", "Casualty", "Electricity", "Fire", "FireBrigade", "Flood", "Gas", "Injury", "Paramedics", "Person", "Police", "RoadBlock"};
-string featureName[NBFEATURES] = {"RatioBW", "NbLinesBlackPixels", "NbColsBlackPixels", "HoughLines", "HoughCircles", "BoundingBoxNumber", "BoundingBoxRatio", "GravityCenterX", "GravityCenterY"};
+string featureName[NBFEATURES] = {"RatioBW", "NbLinesBlackPixels", "NbColsBlackPixels", "HoughLines", "HoughCircles", "BoundingBoxNumber", "BoundingBoxRatio", "GravityCenterX", "GravityCenterY", "CannyEdges"};
 
 Mat preprocessing(Mat im);
 int computeFeatures(Mat im, float tab[]);
@@ -40,8 +42,13 @@ int main(int argc, char *argv[])
         file << "@ATTRIBUTE label {Accident, Bomb, Car, Casualty, Electricity, Fire, FireBrigade, Flood, Gas, Injury, Paramedics, Person, Police, RoadBlock}" << endl;
 
         for(int f=0; f<NBFEATURES; f++){
-            file << "@ATTRIBUTE " << featureName[f] << " numeric" << endl;
+            file << "@ATTRIBUTE " << featureName[f] << "_Global" << " numeric" << endl;
         }
+		for (int x = 0; x < BLOCKSSIDESIZE; x++)
+			for (int y = 0; y < BLOCKSSIDESIZE; y++)
+				for(int f=0; f<NBFEATURES; f++){
+					file << "@ATTRIBUTE " << featureName[f] << "_" << x << y << " numeric" << endl;
+				}
 
         file << endl;
         file << "@DATA" << endl;
@@ -82,9 +89,20 @@ int main(int argc, char *argv[])
                                 Mat impreproc = preprocessing(im);
 
                                 // COMPUTE FEATURES
-								float featureResults[100];
+								float featureResults[NBFEATURES + NBFEATURES * NBBLOCKS];
                                 int nbResults = computeFeatures(im, featureResults);
 
+								// Divide image in 9 blocks and compute their features (3x3)
+								for (int x = 0; x < BLOCKSSIDESIZE; x++)
+								{
+									for (int y = 0; y < BLOCKSSIDESIZE; y++)
+									{
+										int blockWidth = (int)(im.cols / BLOCKSSIDESIZE);
+										int blockHeight = (int)(im.rows / BLOCKSSIDESIZE);
+										Mat imBlock = im( Rect(x * blockWidth, y * blockHeight, blockWidth, blockHeight) );
+										nbResults += computeFeatures(imBlock, featureResults + nbResults);
+									}
+								}
                                 // ADD VALUE TO THE ARFF FILE
                                 for(int rs=0; rs<nbResults; rs++){
                                     sstm << ", " << featureResults[rs];
@@ -126,6 +144,7 @@ int computeFeatures(Mat im, float tab[]){
 	size += featureHoughCircles(im, tab + size);
 	size += featureBoundingRatio(im, tab + size);
 	size += featureGravityCenter(im, tab + size);
+	size += featureCannyEdge(im, tab + size);
 	//size += featureHistogram(im, tab + size); // TODO
     return size;
 }

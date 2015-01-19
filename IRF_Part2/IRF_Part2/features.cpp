@@ -140,6 +140,26 @@ int featureHoughLines(Mat im, float tab[])
 	return 1;
 }
 
+
+int featureHoughCircles(Mat im, float tab[])
+{
+	double lineMinLength = 40;
+
+	Mat dst;
+	cvtColor(im, dst, CV_BGR2GRAY);
+
+	// smooth it, otherwise a lot of false circles may be detected
+	GaussianBlur(dst, dst, Size(9, 9), 2, 2);
+	vector<Vec3f> circles;
+	HoughCircles(dst, circles, CV_HOUGH_GRADIENT, 2, dst.rows/4, 100, 20);
+
+	tab[0] = circles.size();
+	//cout << tab[0] << endl;
+
+	return 1;
+}
+
+
 int featureBoundingRatio(Mat im, float tab[]){
 	// Convert Image to gray
 	Mat im_gray;
@@ -223,27 +243,11 @@ int featureBoundingRatio(Mat im, float tab[]){
 	return 2;
 }
 
-int featureHoughCircles(Mat im, float tab[])
+
+int featureGravityCenter(Mat im, float tab[])
 {
-	double lineMinLength = 40;
-
-	Mat dst;
-	cvtColor(im, dst, CV_BGR2GRAY);
-
-	// smooth it, otherwise a lot of false circles may be detected
-	GaussianBlur(dst, dst, Size(9, 9), 2, 2);
-	vector<Vec3f> circles;
-	HoughCircles(dst, circles, CV_HOUGH_GRADIENT, 2, dst.rows/4, 100, 20);
-
-	tab[0] = circles.size();
-	//cout << tab[0] << endl;
-
-	return 1;
-}
-
-int featureGravityCenter(Mat input_image, float tab[])
-{
-	cvtColor(input_image, input_image, CV_RGB2GRAY);
+	Mat input_image;
+	cvtColor(im, input_image, CV_RGB2GRAY);
 
 	//-- Step 1: Detect the keypoints using SURF Detector
 	int minHessian = 400;
@@ -274,4 +278,19 @@ int featureGravityCenter(Mat input_image, float tab[])
 	tab[1] = cen.y;
 
 	return 2;
+}
+
+
+int featureCannyEdge(Mat im, float tab[])
+{
+	Mat edges;
+	Canny( im, edges, 100, 100*3, 3 ); // Try with another threshold ?
+	
+	vector<std::vector<cv::Point> > contours;
+	vector<cv::Vec4i> hierarchy;
+	findContours(edges, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
+	// Number of edge pixels
+	tab[0] = contours[0].size();
+
+	return 1;
 }
