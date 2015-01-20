@@ -26,7 +26,7 @@ string reference_Pic_Names[NBICONS] = { "Accident", "Bomb", "Car", "Casualty", "
 string featureName[NBFEATURES] = {"RatioBW", "NbLinesBlackPixels", "NbColsBlackPixels", "HoughLines", "HoughCircles", "BoundingBoxNumber", "BoundingBoxRatio", "GravityCenterX", "GravityCenterY", "CannyEdges"};
 
 Mat preprocessing(Mat im);
-int computeFeatures(Mat im, float tab[]);
+int computeFeatures(Mat im, float tab[], bool divided);
 
 int main(int argc, char *argv[])
 {
@@ -56,6 +56,7 @@ int main(int argc, char *argv[])
 #pragma omp parallel for shared(file)
         for(int i=0; i<NBICONS; i++){
             int cantopen=0, openok=0;
+			cout << "test" << i << endl;
 
             for(int j=0; j<NBFOLDERS; j++){
 
