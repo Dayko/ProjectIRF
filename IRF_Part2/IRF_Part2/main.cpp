@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 
                                 // COMPUTE FEATURES
 								float featureResults[NBFEATURES + NBFEATURES * NBBLOCKS];
-                                int nbResults = computeFeatures(im, featureResults);
+                                int nbResults = computeFeatures(im, featureResults, false);
 
 								// Divide image in 9 blocks and compute their features (3x3)
 								for (int x = 0; x < BLOCKSSIDESIZE; x++)
@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
 										int blockWidth = (int)(im.cols / BLOCKSSIDESIZE);
 										int blockHeight = (int)(im.rows / BLOCKSSIDESIZE);
 										Mat imBlock = im( Rect(x * blockWidth, y * blockHeight, blockWidth, blockHeight) );
-										nbResults += computeFeatures(imBlock, featureResults + nbResults);
+										nbResults += computeFeatures(imBlock, featureResults + nbResults, true);
 									}
 								}
                                 // ADD VALUE TO THE ARFF FILE
@@ -135,14 +135,14 @@ Mat preprocessing(Mat im){
     return im;
 }
 
-int computeFeatures(Mat im, float tab[]){
+int computeFeatures(Mat im, float tab[], bool divided){
 	int size = 0;
 
 	size += featureBW(im, tab + size);
 	size += featureNbBlackPixelLinesCols(im, tab + size);
 	size += featureHoughLines(im, tab + size);
 	size += featureHoughCircles(im, tab + size);
-	size += featureBoundingRatio(im, tab + size);
+	size += featureBoundingRatio(im, tab + size, divided);
 	size += featureGravityCenter(im, tab + size);
 	size += featureCannyEdge(im, tab + size);
 	//size += featureHistogram(im, tab + size); // TODO
