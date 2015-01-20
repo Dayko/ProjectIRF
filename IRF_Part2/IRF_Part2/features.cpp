@@ -29,13 +29,13 @@ int featureHistogram(Mat im, float tab[])
 	for (int h = 0; h < hbins; h++)
 		for (int s = 0; s < sbins; s++)
 		{
-		float histValue = hist.at<float>(h, s);
-		int intensity = cvRound(histValue * 255 / maxVal);
-		if (intensity > maxIntensity)
-		{
-			maxIntensity = intensity;
-			maxI = s;
-		}
+			float histValue = hist.at<float>(h, s);
+			int intensity = cvRound(histValue * 255 / maxVal);
+			if (intensity > maxIntensity)
+			{
+				maxIntensity = intensity;
+				maxI = s;
+			}
 		}
 
 	tab[0] = maxI;
@@ -161,9 +161,11 @@ int featureHoughCircles(Mat im, float tab[])
 
 
 int featureBoundingRatio(Mat im, float tab[]){
+	int areaMax = (im.size().height * im.size().width)*(1 - 0.04);
+	int areaMin = areaMax / 40;
+
 	// Convert Image to gray
 	Mat im_gray;
-
 	cvtColor(im, im_gray, CV_BGR2GRAY);
 
 	// blur the image a little
@@ -200,7 +202,7 @@ int featureBoundingRatio(Mat im, float tab[]){
 
 		if (!((im.size().height - boundRect[i].height) < im.size().height*0.02)
 			&& !((im.size().width - boundRect[i].width) < im.size().width*0.02)
-			&& boundRect[i].area() < 57800 && boundRect[i].area() > 2000
+			&& boundRect[i].area() < areaMax && boundRect[i].area() > areaMin
 			&& !(((float)(boundRect[i].height) / (float)(boundRect[i].width)) < 0.08 || ((float)(boundRect[i].width) / (float)(boundRect[i].height)) < 0.08)){
 			rectangleToMerge.push_back(boundRect[i]);
 		}
@@ -212,12 +214,13 @@ int featureBoundingRatio(Mat im, float tab[]){
 	}*/
 
 	if (rectangleToMerge.size() == 0){
-		tab[0] = NULL;
-		tab[1] = NULL;
+		tab[0] = 0; // à voir si on renvoie 0, ou NULL qui se transforme en missing value "?" dans l'impression du ARFF ?
+		tab[1] = 0;
 	}
 	else{
 		tab[0] = rectangleToMerge.size();
-		int minXleft = 1000;
+		// si c'est une image divisée, le ratio de bounding box a peu de chance d'être cohérent, on renvoie 0 pour le ratio
+		int minXleft = 1000; // just extreme values
 		int maxXright = 0;
 		int minYtop = 1000;
 		int maxYbottom = 0;
@@ -232,12 +235,12 @@ int featureBoundingRatio(Mat im, float tab[]){
 				maxYbottom = (*it).y + (*it).height;
 		}
 		/* Impression de la bounding box générale en bleu */
-		// rectangle(im, Point(minXleft, minYtop), Point(maxXright, maxYbottom), Scalar(255, 0, 0));
+		//rectangle(im, Point(minXleft, minYtop), Point(maxXright, maxYbottom), Scalar(255, 0, 0));
 		tab[1] = (float)(maxXright - minXleft) / (float)(maxYbottom - minYtop);
 		//cout << tab[1] << endl;
 	}
-	/* Enregistrement de l'image
-	int i = rand() % 500;
+	//Enregistrement de l'image
+	/*int i = rand() % 1500;
 	string path2 = to_string(i);// +"-" + to_string(rectangleToMerge.size());
 	imwrite("../output2/" + path2 + ".png", im);*/
 	return 2;
@@ -267,7 +270,7 @@ int featureGravityCenter(Mat im, float tab[])
 	//waitKey(0);
 
 	Point2f cen(0, 0);
-	for (size_t i = 0; i<keypoints_1.size(); i++)
+	for (size_t i = 0; i < keypoints_1.size(); i++)
 	{
 		cen.x += keypoints_1[i].pt.x;
 		cen.y += keypoints_1[i].pt.y;

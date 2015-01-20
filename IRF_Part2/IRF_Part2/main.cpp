@@ -143,7 +143,7 @@ int computeFeatures(Mat im, float tab[], bool divided){
 	size += featureNbBlackPixelLinesCols(im, tab + size);
 	size += featureHoughLines(im, tab + size);
 	size += featureHoughCircles(im, tab + size);
-	size += featureBoundingRatio(im, tab + size, divided);
+	size += featureBoundingRatio(im, tab + size);
 	size += featureGravityCenter(im, tab + size);
 	size += featureCannyEdge(im, tab + size);
 	//size += featureHistogram(im, tab + size); // TODO

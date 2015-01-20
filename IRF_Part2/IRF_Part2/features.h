@@ -19,7 +19,7 @@ using namespace cv;
 
 int featureHistogram(Mat im, float tab[]);
 int featureBW(Mat im, float tab[]);
-int featureBoundingRatio(Mat im, float tab[], bool divided);
+int featureBoundingRatio(Mat im, float tab[]);
 int featureNbBlackPixelLinesCols(Mat im, float tab[]);
 int featureHoughLines(Mat im, float tab[]);
 int featureHoughCircles(Mat im, float tab[]);
