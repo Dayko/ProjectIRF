@@ -4,43 +4,43 @@
 
 int featureHistogram(Mat im, float tab[])
 {
-	
-    /// Convert to HSV
+
+	/// Convert to HSV
 	Mat imhsv;
-    cvtColor( im, imhsv, COLOR_BGR2HSV );
+	cvtColor(im, imhsv, COLOR_BGR2HSV);
 
-    int hbins = 30, sbins = 32;
-    int histSize[] = {hbins, sbins};
-    // hue varies from 0 to 179, saturation from 0 to 255
+	int hbins = 30, sbins = 32;
+	int histSize[] = { hbins, sbins };
+	// hue varies from 0 to 179, saturation from 0 to 255
 	float hranges[] = { 0, 180 };
-    float sranges[] = { 0, 256 };
-    const float* ranges[] = { hranges, sranges };
-    int channels[] = {0, 1};
+	float sranges[] = { 0, 256 };
+	const float* ranges[] = { hranges, sranges };
+	int channels[] = { 0, 1 };
 
-    /// Histograms
-    MatND hist;
-    calcHist( &imhsv, 1, channels, Mat(), hist, 2, histSize, ranges, true, false );
-	
-    double maxVal=0;
-    minMaxLoc(hist, 0, &maxVal, 0, 0);
+	/// Histograms
+	MatND hist;
+	calcHist(&imhsv, 1, channels, Mat(), hist, 2, histSize, ranges, true, false);
+
+	double maxVal = 0;
+	minMaxLoc(hist, 0, &maxVal, 0, 0);
 
 	int maxI = 10;
 	int maxIntensity = 0.0;
-	for( int h = 0; h < hbins; h++ )
-        for( int s = 0; s < sbins; s++ )
-	{
+	for (int h = 0; h < hbins; h++)
+		for (int s = 0; s < sbins; s++)
+		{
 		float histValue = hist.at<float>(h, s);
-		int intensity = cvRound(histValue*255/maxVal);
+		int intensity = cvRound(histValue * 255 / maxVal);
 		if (intensity > maxIntensity)
 		{
 			maxIntensity = intensity;
 			maxI = s;
 		}
-	}
+		}
 
 	tab[0] = maxI;
 	//cout << tab[0] << endl;
-    
+
 	return 1;
 }
 
@@ -51,18 +51,18 @@ int featureBW(Mat im, float tab[])
 	int limitMax = 255;
 	Mat imThr;
 
-    threshold(im, imThr, limitMin, limitMax, THRESH_BINARY);
-    float countTotal = (float)(im.rows * im.cols);
-    float countBlack = 0.0;
+	threshold(im, imThr, limitMin, limitMax, THRESH_BINARY);
+	float countTotal = (float)(im.rows * im.cols);
+	float countBlack = 0.0;
 
-    for (int j = 0; j < im.rows; j++)
-    {
-        for (int i = 0; i < im.cols; i++)
-        {
-            if (imThr.at<uchar>(j, i) == 0)
-                countBlack = countBlack + 1;
-        }
-    }
+	for (int j = 0; j < im.rows; j++)
+	{
+		for (int i = 0; i < im.cols; i++)
+		{
+			if (imThr.at<uchar>(j, i) == 0)
+				countBlack = countBlack + 1;
+		}
+	}
 	tab[0] = countBlack / countTotal * 100;
 
 	return 1;
@@ -77,7 +77,7 @@ int featureNbBlackPixelLinesCols(Mat im, float tab[])
 	int limitMax = 255;
 	Mat imThr;
 
-    threshold(im, imThr, limitMin, limitMax, THRESH_BINARY);
+	threshold(im, imThr, limitMin, limitMax, THRESH_BINARY);
 
 	// Count black pixel on each lines
 	float cols = (float)im.cols;
@@ -104,19 +104,19 @@ int featureNbBlackPixelLinesCols(Mat im, float tab[])
 	float nbColsTotal = (float)im.cols;
 	float nbColsBlack = 0;
 
-    for (int i = 0; i < im.cols; i++)
-    {
+	for (int i = 0; i < im.cols; i++)
+	{
 		int colCountBlack = 0;
 		for (int j = 0; j < im.rows; j++)
-        {
-            if (imThr.at<uchar>(j, i) == 0)
-                colCountBlack = colCountBlack + 1;
-        }
+		{
+			if (imThr.at<uchar>(j, i) == 0)
+				colCountBlack = colCountBlack + 1;
+		}
 		if (colCountBlack > rows * thresholdValue)
 		{
 			nbColsBlack = nbColsBlack + 1;
 		}
-    }
+	}
 	tab[1] = nbColsBlack / nbColsTotal;
 	//cout << tab[0] << endl;
 
@@ -151,7 +151,7 @@ int featureHoughCircles(Mat im, float tab[])
 	// smooth it, otherwise a lot of false circles may be detected
 	GaussianBlur(dst, dst, Size(9, 9), 2, 2);
 	vector<Vec3f> circles;
-	HoughCircles(dst, circles, CV_HOUGH_GRADIENT, 2, dst.rows/4, 100, 20);
+	HoughCircles(dst, circles, CV_HOUGH_GRADIENT, 2, dst.rows / 4, 100, 20);
 
 	tab[0] = circles.size();
 	//cout << tab[0] << endl;
@@ -160,17 +160,7 @@ int featureHoughCircles(Mat im, float tab[])
 }
 
 
-int featureBoundingRatio(Mat im, float tab[], bool divided){
-	int areaMin;
-	int areaMax;
-	if (divided){
-		areaMin = 300;
-		areaMax = 6400;
-	}
-	else{
-		areaMin = 2000;
-		areaMax = 57800;
-	}
+int featureBoundingRatio(Mat im, float tab[]){
 	// Convert Image to gray
 	Mat im_gray;
 
@@ -178,7 +168,7 @@ int featureBoundingRatio(Mat im, float tab[], bool divided){
 
 	// blur the image a little
 	blur(im_gray, im_gray, Size(3, 3));
-	
+
 	/// Detect edges using Threshold
 	Mat threshold_output;
 	int thresh = 253;
@@ -207,54 +197,49 @@ int featureBoundingRatio(Mat im, float tab[], bool divided){
 		// or it's a wrong box wich result of a remaining border of an imagette. We also check it if the ratio of the box is anormal (too small)
 		// We also discard too small rectangles and too big (another check for the whole image bouding box)
 		//cout << " Height : " << boundRect[i].height << " -- Width : " << boundRect[i].width << endl;
-		
+
 		if (!((im.size().height - boundRect[i].height) < im.size().height*0.02)
 			&& !((im.size().width - boundRect[i].width) < im.size().width*0.02)
-			&& boundRect[i].area() < areaMax && boundRect[i].area() > areaMin
+			&& boundRect[i].area() < 57800 && boundRect[i].area() > 2000
 			&& !(((float)(boundRect[i].height) / (float)(boundRect[i].width)) < 0.08 || ((float)(boundRect[i].width) / (float)(boundRect[i].height)) < 0.08)){
 			rectangleToMerge.push_back(boundRect[i]);
 		}
 	}
 	/* Impression de des bounding boxes que l'on considère valides */
 	/*for (int i = 0; i < rectangleToMerge.size(); i++){
-		Scalar color = Scalar(0, 255, 0);
-		rectangle(im, rectangleToMerge[i].tl(), rectangleToMerge[i].br(), color, 2, 8, 0);
+	Scalar color = Scalar(0, 255, 0);
+	rectangle(im, rectangleToMerge[i].tl(), rectangleToMerge[i].br(), color, 2, 8, 0);
 	}*/
-	
+
 	if (rectangleToMerge.size() == 0){
-		tab[0] = 0; // à voir si on renvoie 0, ou NULL qui se transforme en missing value "?" dans l'impression du ARFF ?
-		tab[1] = 0; 
+		tab[0] = NULL;
+		tab[1] = NULL;
 	}
 	else{
 		tab[0] = rectangleToMerge.size();
-		// si c'est une image divisée, le ratio de bounding box a peu de chance d'être cohérent, on renvoie 0 pour le ratio
-		if (divided)
-			tab[1] = 0;
-		else{
-			int minXleft = 1000;
-			int maxXright = 0;
-			int minYtop = 1000;
-			int maxYbottom = 0;
-			for (vector<Rect>::iterator it = rectangleToMerge.begin(); it != rectangleToMerge.end(); it++){
-				if ((*it).x < minXleft)
-					minXleft = (*it).x;
-				if ((*it).y < minYtop)
-					minYtop = (*it).y;
-				if (((*it).x + (*it).width) > maxXright)
-					maxXright = (*it).x + (*it).width;
-				if (((*it).y + (*it).height) > maxYbottom)
-					maxYbottom = (*it).y + (*it).height;
-			}
-			/* Impression de la bounding box générale en bleu */
-			//rectangle(im, Point(minXleft, minYtop), Point(maxXright, maxYbottom), Scalar(255, 0, 0));
-			tab[1] = (float)(maxXright - minXleft) / (float)(maxYbottom - minYtop);
-			//cout << tab[1] << endl;
+		int minXleft = 1000;
+		int maxXright = 0;
+		int minYtop = 1000;
+		int maxYbottom = 0;
+		for (vector<Rect>::iterator it = rectangleToMerge.begin(); it != rectangleToMerge.end(); it++){
+			if ((*it).x < minXleft)
+				minXleft = (*it).x;
+			if ((*it).y < minYtop)
+				minYtop = (*it).y;
+			if (((*it).x + (*it).width) > maxXright)
+				maxXright = (*it).x + (*it).width;
+			if (((*it).y + (*it).height) > maxYbottom)
+				maxYbottom = (*it).y + (*it).height;
 		}
+		/* Impression de la bounding box générale en bleu */
+		// rectangle(im, Point(minXleft, minYtop), Point(maxXright, maxYbottom), Scalar(255, 0, 0));
+		tab[1] = (float)(maxXright - minXleft) / (float)(maxYbottom - minYtop);
+		//cout << tab[1] << endl;
 	}
-		 //Enregistrement de l'image
-		/*int i = rand() % 1500;
-		string path2 = to_string(i);// +"-" + to_string(rectangleToMerge.size());
-		imwrite("../output2/" + path2 + ".png", im);*/
+	/* Enregistrement de l'image
+	int i = rand() % 500;
+	string path2 = to_string(i);// +"-" + to_string(rectangleToMerge.size());
+	imwrite("../output2/" + path2 + ".png", im);*/
 	return 2;
 }
 
@@ -280,18 +265,25 @@ int featureGravityCenter(Mat im, float tab[])
 	//-- Show detected (drawn) keypoints
 	//imshow("Keypoints 1", img_keypoints_1);
 	//waitKey(0);
-	
+
 	Point2f cen(0, 0);
 	for (size_t i = 0; i<keypoints_1.size(); i++)
 	{
 		cen.x += keypoints_1[i].pt.x;
 		cen.y += keypoints_1[i].pt.y;
 	}
-	cen.x /= keypoints_1.size();
-	cen.y /= keypoints_1.size();
-	tab[0] = cen.x;
-	tab[1] = cen.y;
-
+	if (keypoints_1.size() != 0)
+	{
+		cen.x /= keypoints_1.size();
+		cen.y /= keypoints_1.size();
+		tab[0] = cen.x;
+		tab[1] = cen.y;
+	}
+	else
+	{
+		tab[0] = 0;
+		tab[1] = 0;
+	}
 	return 2;
 }
 
@@ -299,13 +291,13 @@ int featureGravityCenter(Mat im, float tab[])
 int featureCannyEdge(Mat im, float tab[])
 {
 	Mat edges;
-	Canny( im, edges, 100, 100*3, 3 ); // Try with another threshold ?
-	
+	Canny(im, edges, 100, 100 * 3, 3); // Try with another threshold ?
+
 	vector<std::vector<cv::Point> > contours;
 	vector<cv::Vec4i> hierarchy;
 	findContours(edges, contours, hierarchy, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
 	// Number of edge pixels
-	tab[0] = contours[0].size();
+	tab[0] = contours.size();
 
 	return 1;
 }
