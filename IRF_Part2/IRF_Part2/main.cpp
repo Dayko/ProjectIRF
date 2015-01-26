@@ -25,7 +25,7 @@ string imgFormat = ".png";
 string pathToArff = "../arff/2.arff";
 
 string reference_Pic_Names[NBICONS] = { "Accident", "Bomb", "Car", "Casualty", "Electricity", "Fire", "FireBrigade", "Flood", "Gas", "Injury", "Paramedics", "Person", "Police", "RoadBlock"};
-string featureName[NBFEATURES] = {"RatioBW", "NbLinesBlackPixels", "NbColsBlackPixels", "HoughLines", "HoughCircles", "BoundingBoxNumber", "BoundingBoxRatio", "GravityCenterX", "GravityCenterY", "CannyEdges"};
+string featureName[NBFEATURES] = {"RatioBW", "NbLinesBlackPixels", "NbColsBlackPixels", "HoughLines", "HoughCircles", "BoundingBoxNumber", "GravityCenterX", "GravityCenterY", "CannyEdges", "HWRatio"};
 string featureNameZoning[NBFEATURESZONING] = {"RatioBW", "NbLinesBlackPixels", "NbColsBlackPixels", "HoughLines", "HoughCircles", "BoundingBoxNumber", "GravityCenterX", "GravityCenterY", "CannyEdges"};
 
 Mat preprocessing(Mat im);
@@ -147,7 +147,7 @@ int computeFeatures(Mat im, float tab[], bool divided){
     size += featureNbBlackPixelLinesCols(im, tab + size);
     size += featureHoughLines(im, tab + size);
     size += featureHoughCircles(im, tab + size);
-    size += featureBoundingRatio(im, tab + size);
+	size += featureBoundingBoxNumber(im, tab + size);
     size += featureGravityCenter(im, tab + size);
     size += featureCannyEdge(im, tab + size);
     size += featureHWRatio(im, tab +size);
@@ -163,7 +163,7 @@ int computeFeaturesZoning(Mat im, float tab[], bool divided){
     size += featureNbBlackPixelLinesCols(im, tab + size);
     size += featureHoughLines(im, tab + size);
     size += featureHoughCircles(im, tab + size);
-    size += featureBoundingRatio(im, tab + size);
+	size += featureBoundingBoxNumber(im, tab + size);
     size += featureGravityCenter(im, tab + size);
     size += featureCannyEdge(im, tab + size);
 

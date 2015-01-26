@@ -157,7 +157,7 @@ int featureHoughCircles(Mat im, float tab[])
 }
 
 
-int featureBoundingRatio(Mat im, float tab[]){
+int featureBoundingBoxNumber(Mat im, float tab[]){
 	int areaMax = (im.size().height * im.size().width)*(1 - 0.04);
 	int areaMin = areaMax / 40;
 
@@ -184,59 +184,33 @@ int featureBoundingRatio(Mat im, float tab[]){
 	}
 
 	vector<Rect> rectangleToMerge;
-	//cout << "Size of image : Height - " << im.size().height << " -- Width - " << im.size().width << endl;
 	for (int i = 0; i < boundRect.size(); i++)
 	{
 		//test of the Rectangle :
 		// If it's approximatly equal to the dimension, in height or width, of the whole image, then it's probably the box of the whole image
-		// or it's a wrong box wich result of a remaining border of an imagette. We also check it if the ratio of the box is anormal (too small)
+		// or it's a wrong box wich result of a remaining border line of an imagette. We also check it if the ratio of the box is anormal (too small)
 		// We also discard too small rectangles and too big (another check for the whole image bouding box)
-		//cout << " Height : " << boundRect[i].height << " -- Width : " << boundRect[i].width << endl;
-
 		if (!((im.size().height - boundRect[i].height) < im.size().height*0.02)
-			&& !((im.size().width - boundRect[i].width) < im.size().width*0.02)
-			&& boundRect[i].area() < areaMax && boundRect[i].area() > areaMin
-			&& !(((float)(boundRect[i].height) / (float)(boundRect[i].width)) < 0.08 || ((float)(boundRect[i].width) / (float)(boundRect[i].height)) < 0.08)){
+				&& !((im.size().width - boundRect[i].width) < im.size().width*0.02)
+				&& boundRect[i].area() < areaMax && boundRect[i].area() > areaMin
+				&& !(((float)(boundRect[i].height) / (float)(boundRect[i].width)) < 0.08 || ((float)(boundRect[i].width) / (float)(boundRect[i].height)) < 0.08)){
 			rectangleToMerge.push_back(boundRect[i]);
 		}
 	}
+
 	/* Impression de des bounding boxes que l'on considère valides */
 	/*for (int i = 0; i < rectangleToMerge.size(); i++){
 	Scalar color = Scalar(0, 255, 0);
 	rectangle(im, rectangleToMerge[i].tl(), rectangleToMerge[i].br(), color, 2, 8, 0);
 	}*/
+	
+	tab[0] = rectangleToMerge.size();
 
-	if (rectangleToMerge.size() == 0){
-		tab[0] = 0; // à voir si on renvoie 0, ou NULL qui se transforme en missing value "?" dans l'impression du ARFF ?
-		tab[1] = 0;
-	}
-	else{
-		tab[0] = rectangleToMerge.size();
-		// si c'est une image divisée, le ratio de bounding box a peu de chance d'être cohérent, on renvoie 0 pour le ratio
-		int minXleft = 1000; // just extreme values
-		int maxXright = 0;
-		int minYtop = 1000;
-		int maxYbottom = 0;
-		for (vector<Rect>::iterator it = rectangleToMerge.begin(); it != rectangleToMerge.end(); it++){
-			if ((*it).x < minXleft)
-				minXleft = (*it).x;
-			if ((*it).y < minYtop)
-				minYtop = (*it).y;
-			if (((*it).x + (*it).width) > maxXright)
-				maxXright = (*it).x + (*it).width;
-			if (((*it).y + (*it).height) > maxYbottom)
-				maxYbottom = (*it).y + (*it).height;
-		}
-		/* Impression de la bounding box générale en bleu */
-		//rectangle(im, Point(minXleft, minYtop), Point(maxXright, maxYbottom), Scalar(255, 0, 0));
-		tab[1] = (float)(maxXright - minXleft) / (float)(maxYbottom - minYtop);
-		//cout << tab[1] << endl;
-	}
-	//Enregistrement de l'image
+	//Enregistrement de l'image pour observer les résultats
 	/*int i = rand() % 1500;
 	string path2 = to_string(i);// +"-" + to_string(rectangleToMerge.size());
 	imwrite("../output2/" + path2 + ".png", im);*/
-	return 2;
+	return 1;
 }
 
 
