@@ -145,13 +145,10 @@ int featureHoughCircles(Mat im, float tab[])
 {
 	double lineMinLength = 40;
 
-	Mat dst;
-	cvtColor(im, dst, CV_BGR2GRAY);
-
 	// smooth it, otherwise a lot of false circles may be detected
-	GaussianBlur(dst, dst, Size(9, 9), 2, 2);
+    GaussianBlur(im, im, Size(9, 9), 2, 2);
 	vector<Vec3f> circles;
-	HoughCircles(dst, circles, CV_HOUGH_GRADIENT, 2, dst.rows / 4, 100, 20);
+    HoughCircles(im, circles, CV_HOUGH_GRADIENT, 2, im.rows / 4, 100, 20);
 
 	tab[0] = circles.size();
 	//cout << tab[0] << endl;
@@ -164,17 +161,13 @@ int featureBoundingRatio(Mat im, float tab[]){
 	int areaMax = (im.size().height * im.size().width)*(1 - 0.04);
 	int areaMin = areaMax / 40;
 
-	// Convert Image to gray
-	Mat im_gray;
-	cvtColor(im, im_gray, CV_BGR2GRAY);
-
 	// blur the image a little
-	blur(im_gray, im_gray, Size(3, 3));
+    blur(im, im, Size(3, 3));
 
 	/// Detect edges using Threshold
 	Mat threshold_output;
 	int thresh = 253;
-	threshold(im_gray, threshold_output, thresh, 255, THRESH_BINARY);
+    threshold(im, threshold_output, thresh, 255, THRESH_BINARY);
 
 	// Finds contours
 	vector<vector<Point>> contours;
@@ -249,9 +242,6 @@ int featureBoundingRatio(Mat im, float tab[]){
 
 int featureGravityCenter(Mat im, float tab[])
 {
-	Mat input_image;
-	cvtColor(im, input_image, CV_RGB2GRAY);
-
 	//-- Step 1: Detect the keypoints using SURF Detector
 	int minHessian = 400;
 
@@ -259,7 +249,7 @@ int featureGravityCenter(Mat im, float tab[])
 
 	std::vector<KeyPoint> keypoints_1;
 
-	detector.detect(input_image, keypoints_1);
+    detector.detect(im, keypoints_1);
 
 	//-- Draw keypoints
 	//Mat img_keypoints_1;
@@ -303,4 +293,10 @@ int featureCannyEdge(Mat im, float tab[])
 	tab[0] = contours.size();
 
 	return 1;
+}
+
+int featureHWRatio(Mat im, float tab[])
+{
+    tab[0] = (float)im.rows/(float)im.cols;
+    return 1;
 }
