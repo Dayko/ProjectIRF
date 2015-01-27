@@ -22,27 +22,30 @@ Mat preProcess(Mat inputImage)
 
 	Mat im_bounding = BoundingRatio(threshold_output);
 
-	/*
-    //Opening to reduce possible noise (erosion+dilation)
-	Mat im_out;
-    int morph_size = 1;
-    Mat element = getStructuringElement(0, Size(2 * morph_size + 1, 2 * morph_size + 1), Point(morph_size, morph_size));
-	morphologyEx(im_blur, im_out, 1, element);
+	
+    //Dilaating to reduce possible noise
+	Mat im_closed;
+    int morph_size = 2;
+    Mat DilateElement = getStructuringElement(0, Size(2 * morph_size + 1, 2 * morph_size + 1), Point(morph_size, morph_size));
+	morphologyEx(im_bounding, im_closed, 3, DilateElement);
 
-    //Closing to strenghten the lines again and to fill unwanted gaps
-    morphologyEx(im_out, im_out, 2, element);
+	
+    //Opening to strenghten the lines again and to fill unwanted gaps
+	Mat im_opened;
+	Mat OpeningElement = getStructuringElement(0, Size(2 * morph_size + 1, 2 * morph_size + 1), Point(morph_size, morph_size));
+	morphologyEx(im_closed, im_opened, 2, OpeningElement);
 
     //Median filter
-    for (int i = 1; i < 3; i = i + 2)
+    /*for (int i = 1; i < 3; i = i + 2)
     {
         medianBlur(im_out, im_out, i);
     }*/
 
-	/*
-	int i = rand() % 15000;
+	/*int i = rand() % 15000;
 	string path2 = to_string(i);// +"-" + to_string(rectangleToMerge.size());
-	imwrite("../output2/" + path2 + ".png", threshold_output);
-	imwrite("../output2/" + path2 + "S.png", im_bounding);
-	*/
-	return im_bounding;
+	imwrite("../output2/" + path2 + "acrop.png", im_bounding);
+	imwrite("../output2/" + path2 + "bclosed.png", im_closed);
+	imwrite("../output2/" + path2 + "copened.png", im_opened);*/
+	
+	return im_opened;
 }

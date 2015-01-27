@@ -5,12 +5,12 @@ Mat preProcess(Mat inputImage)
 	Mat im_out = inputImage;
 	//Grayscale
 	cvtColor(im_out, im_out, CV_BGR2GRAY);
-	//Opening to reduce possible noise (erosion+dilation)
+	//Dilate to reduce possible noise
 	int morph_size = 1;
 	Mat element = getStructuringElement(0, Size(2 * morph_size + 1, 2 * morph_size + 1), Point(morph_size, morph_size));
 	morphologyEx(im_out, im_out, 1, element);
 
-	//Closing to strenghten the lines again and to fill unwanted gaps
+	//Opening to strenghten the lines again and to fill unwanted gaps
 	morphologyEx(im_out, im_out, 2, element);
 
 	//Median filter
