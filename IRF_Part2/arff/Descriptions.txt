@@ -1,0 +1,5 @@
+arf1.arff :
+10 folders, toutes features, dont HWRatio et BoundingBoxNumber, int areaMin = areaMax / 40;
+
+arf2.arff : 
+pareil, int areaMin = areaMax / 70;

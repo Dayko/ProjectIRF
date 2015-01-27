@@ -159,7 +159,7 @@ int featureHoughCircles(Mat im, float tab[])
 
 int featureBoundingBoxNumber(Mat im, float tab[]){
 	int areaMax = (im.size().height * im.size().width)*(1 - 0.04);
-	int areaMin = areaMax / 40;
+	int areaMin = areaMax / 70;
 
 	// blur the image a little
     blur(im, im, Size(3, 3));
