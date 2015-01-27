@@ -148,6 +148,7 @@ int featureHoughCircles(Mat im, float tab[])
 	// smooth it, otherwise a lot of false circles may be detected
     GaussianBlur(im, im, Size(9, 9), 2, 2);
 	vector<Vec3f> circles;
+	if (im.rows>0)
     HoughCircles(im, circles, CV_HOUGH_GRADIENT, 2, im.rows / 4, 100, 20);
 
 	tab[0] = circles.size();
@@ -190,9 +191,9 @@ int featureBoundingBoxNumber(Mat im, float tab[]){
 		// If it's approximatly equal to the dimension, in height or width, of the whole image, then it's probably the box of the whole image
 		// or it's a wrong box wich result of a remaining border line of an imagette. We also check it if the ratio of the box is anormal (too small)
 		// We also discard too small rectangles and too big (another check for the whole image bouding box)
-		if (!((im.size().height - boundRect[i].height) < im.size().height*0.02)
+		if (/*!((im.size().height - boundRect[i].height) < im.size().height*0.02)
 				&& !((im.size().width - boundRect[i].width) < im.size().width*0.02)
-				&& boundRect[i].area() < areaMax && boundRect[i].area() > areaMin
+				&& */ boundRect[i].area() < areaMax && boundRect[i].area() > areaMin
 				&& !(((float)(boundRect[i].height) / (float)(boundRect[i].width)) < 0.08 || ((float)(boundRect[i].width) / (float)(boundRect[i].height)) < 0.08)){
 			rectangleToMerge.push_back(boundRect[i]);
 		}

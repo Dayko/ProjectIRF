@@ -1,32 +1,19 @@
 #include "normalization.h"
 
-Mat BoundingRatio(Mat im){
+Mat BoundingRatio(Mat inputImage){
     int areaMin;
     int areaMax;
 
     areaMin = 2000;
     areaMax = 57800;
-
-    // Convert Image to gray
-    Mat im_gray;
-
-    cvtColor(im, im_gray, CV_BGR2GRAY);
-
-    // blur the image a little
-    Mat im_blur;
-    blur(im_gray, im_blur, Size(3, 3));
-
-    /// Detect edges using Threshold
-    Mat threshold_output;
-    int thresh = 253;
-    threshold(im_blur, threshold_output, thresh, 255, THRESH_BINARY);
-
+	Mat im;
+	inputImage.copyTo(im);
     // Finds contours
     vector<vector<Point>> contours;
     vector<Vec4i> hierarchy;
-    findContours(threshold_output, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE, Point(0, 0));
+    findContours(im, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE, Point(0, 0));
 
-    // Approximate contours to polygons + get bounding rects and circles
+    // Approximate contours to polygons + get bounding rects
     vector<vector<Point> > contours_poly(contours.size());
     vector<Rect> boundRect(contours.size());
     for (int i = 0; i < contours.size(); i++)
@@ -43,10 +30,10 @@ Mat BoundingRatio(Mat im){
         // or it's a wrong box wich result of a remaining border of an imagette. We also check it if the ratio of the box is anormal (too small)
         // We also discard too small rectangles and too big (another check for the whole image bouding box)
 
-        if (!((im.size().height - boundRect[i].height) < im.size().height*0.02)
+        if (/*!((im.size().height - boundRect[i].height) < im.size().height*0.02)
                 && !((im.size().width - boundRect[i].width) < im.size().width*0.02)
-                && boundRect[i].area() < areaMax && boundRect[i].area() > areaMin
-                && !(((float)(boundRect[i].height) / (float)(boundRect[i].width)) < 0.08 || ((float)(boundRect[i].width) / (float)(boundRect[i].height)) < 0.08)){
+                &&*/ boundRect[i].area() < areaMax && boundRect[i].area() > areaMin
+                && !(((float)(boundRect[i].height) / (float)(boundRect[i].width)) < 0.05 || ((float)(boundRect[i].width) / (float)(boundRect[i].height)) < 0.05)){
             rectangleToMerge.push_back(boundRect[i]);
         }
     }
@@ -72,7 +59,7 @@ Mat BoundingRatio(Mat im){
     }
     // We crop the picture to the boundingBox
     Rect myROI(xmin, ymin, xmax-xmin, ymax-ymin);
-    Mat croppedImage = im_gray(myROI);
+    Mat croppedImage = inputImage(myROI);
 
     return croppedImage;
 }
