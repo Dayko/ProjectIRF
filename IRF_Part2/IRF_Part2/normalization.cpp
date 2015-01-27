@@ -1,13 +1,11 @@
 #include "normalization.h"
 
 Mat BoundingRatio(Mat inputImage){
-    int areaMin;
-    int areaMax;
-
-    areaMin = 2000;
-    areaMax = 57800;
 	Mat im;
 	inputImage.copyTo(im);
+
+	int areaMax = (im.size().height * im.size().width)*(1 - 0.04);
+	int areaMin = areaMax / 40;
     // Finds contours
     vector<vector<Point>> contours;
     vector<Vec4i> hierarchy;
