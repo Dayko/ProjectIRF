@@ -8,21 +8,23 @@
 #include "preprocessing.h"
 
 #define NBICONS 14
-#define NBFOLDERS 10//35
+#define NBFOLDERS 35//35
 #define NBSHEETS 22//22
 #define NBROW 7
 #define NBCOLUMNS 5
 #define NBFEATURES 10
 #define NBFEATURESZONING 9
-#define NBBLOCKS 9
-#define BLOCKSSIDESIZE 3
+#define NB_BLOCKS_3x3 9
+#define BLOCKS_SIDESIZE_3x3 3
+#define NB_BLOCKS_2x2 4
+#define BLOCKS_SIDESIZE_2x2 2
 
 using namespace cv;
 using namespace std;
 
-string inputPath = "../output/";
+string inputPath = "../../../outputDonnee/";
 string imgFormat = ".png";
-string pathToArff = "../arff/2.arff";
+string pathToArff = "../arff/testDB.arff";
 
 string reference_Pic_Names[NBICONS] = { "Accident", "Bomb", "Car", "Casualty", "Electricity", "Fire", "FireBrigade", "Flood", "Gas", "Injury", "Paramedics", "Person", "Police", "RoadBlock"};
 string featureName[NBFEATURES] = {"RatioBW", "NbLinesBlackPixels", "NbColsBlackPixels", "HoughLines", "HoughCircles", "BoundingBoxNumber", "GravityCenterX", "GravityCenterY", "CannyEdges", "HWRatio"};
@@ -48,12 +50,16 @@ int main(int argc, char *argv[])
         for(int f=0; f<NBFEATURES; f++){
             file << "@ATTRIBUTE " << featureName[f] << "_Global" << " numeric" << endl;
         }
-        for (int x = 0; x < BLOCKSSIDESIZE; x++)
-            for (int y = 0; y < BLOCKSSIDESIZE; y++)
+		for (int x = 0; x < BLOCKS_SIDESIZE_3x3; x++)
+			for (int y = 0; y < BLOCKS_SIDESIZE_3x3; y++)
                 for(int f=0; f<NBFEATURESZONING; f++){
-                    file << "@ATTRIBUTE " << featureNameZoning[f] << "_" << x << y << " numeric" << endl;
+					file << "@ATTRIBUTE " << featureNameZoning[f] << "_" << BLOCKS_SIDESIZE_3x3 << "x" << BLOCKS_SIDESIZE_3x3 << "_" << x << y << " numeric" << endl;
                 }
-
+		for (int x = 0; x < BLOCKS_SIDESIZE_2x2; x++)
+			for (int y = 0; y < BLOCKS_SIDESIZE_2x2; y++)
+				for (int f = 0; f<NBFEATURESZONING; f++){
+					file << "@ATTRIBUTE " << featureNameZoning[f] << "_" << BLOCKS_SIDESIZE_2x2 << "x" << BLOCKS_SIDESIZE_2x2 << "_" << x << y << " numeric" << endl;
+				}
         file << endl;
         file << "@DATA" << endl;
 
@@ -91,23 +97,34 @@ int main(int argc, char *argv[])
 
                                 // DO  PRE-PROCESSING
                                 Mat impreproc = preprocessing(im);
-
+								//Mat impreproc = im;
 
                                 // COMPUTE FEATURES
-                                float featureResults[NBFEATURES + NBFEATURES * NBBLOCKS];
+								float featureResults[NBFEATURES + NBFEATURESZONING * NB_BLOCKS_3x3 + NBFEATURESZONING * NB_BLOCKS_2x2];
                                 int nbResults = computeFeatures(impreproc, featureResults, false);
 
                                 // Divide image in 9 blocks and compute their features (3x3)
-                                for (int x = 0; x < BLOCKSSIDESIZE; x++)
+								for (int x = 0; x < BLOCKS_SIDESIZE_3x3; x++)
                                 {
-                                    for (int y = 0; y < BLOCKSSIDESIZE; y++)
+									for (int y = 0; y < BLOCKS_SIDESIZE_3x3; y++)
                                     {
-                                        int blockWidth = (int)(impreproc.cols / BLOCKSSIDESIZE);
-                                        int blockHeight = (int)(impreproc.rows / BLOCKSSIDESIZE);
+										int blockWidth = (int)(impreproc.cols / BLOCKS_SIDESIZE_3x3);
+										int blockHeight = (int)(impreproc.rows / BLOCKS_SIDESIZE_3x3);
                                         Mat imBlock = impreproc( Rect(x * blockWidth, y * blockHeight, blockWidth, blockHeight) );
                                         nbResults += computeFeaturesZoning(imBlock, featureResults + nbResults, true);
                                     }
                                 }
+								// Divide image in 4 blocks and compute their features (2x2)
+								for (int x = 0; x < BLOCKS_SIDESIZE_2x2; x++)
+								{
+									for (int y = 0; y < BLOCKS_SIDESIZE_2x2; y++)
+									{
+										int blockWidth = (int)(impreproc.cols / BLOCKS_SIDESIZE_2x2);
+										int blockHeight = (int)(impreproc.rows / BLOCKS_SIDESIZE_2x2);
+										Mat imBlock = impreproc(Rect(x * blockWidth, y * blockHeight, blockWidth, blockHeight));
+										nbResults += computeFeaturesZoning(imBlock, featureResults + nbResults, true);
+									}
+								}
                                 // ADD VALUE TO THE ARFF FILE
                                 for(int rs=0; rs<nbResults; rs++){
                                     sstm << ", " << featureResults[rs];
@@ -116,7 +133,7 @@ int main(int argc, char *argv[])
 
                                 #pragma omp critical
                                 file << sstm.str();
-
+								cout << "line added icone : " << i << endl;
 
                             }
                         }
