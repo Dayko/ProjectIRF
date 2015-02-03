@@ -8,44 +8,24 @@ Mat preProcess(Mat inputImage)
 	Mat im_gray;
 
 	cvtColor(inputImage, im_gray, CV_BGR2GRAY);
-	
-	// blur the image a little
-	Mat im_blur;
-	blur(im_gray, im_blur, Size(3, 3));
-
-
-	
+		
 	// Detect edges using Threshold
 	Mat threshold_output;
-	int thresh = 253;
-	threshold(im_blur, threshold_output, thresh, 255, THRESH_BINARY);
+	int thresh = 245;
+	threshold(im_gray, threshold_output, thresh, 255, THRESH_BINARY);
 
-	Mat im_bounding = BoundingRatio(threshold_output);
+	//eroding to strenghten the lines again and to fill unwanted gaps
+	Mat im_eroded;
+	erode(threshold_output, im_eroded, Mat(), Point(-1, -1), 1, 1, 1);
 
+	// Before cropping : add some blank border around the image to avoid some errors regarding bounding boxes after
+	Mat im_to_crop;
+	im_eroded.copyTo(im_to_crop);
+	Scalar color = Scalar(255, 255, 255);
+	copyMakeBorder(im_eroded, im_to_crop, (int)(0.03*im_eroded.rows), (int)(0.03*im_eroded.rows), (int)(0.03*im_eroded.cols), (int)(0.03*im_eroded.cols),BORDER_CONSTANT,color);
 	
-    //Dilaating to reduce possible noise
-	Mat im_closed;
-    int morph_size = 2;
-    Mat DilateElement = getStructuringElement(0, Size(2 * morph_size + 1, 2 * morph_size + 1), Point(morph_size, morph_size));
-	morphologyEx(im_bounding, im_closed, 3, DilateElement);
+	// Crop the symbol
+	Mat im_bounding = BoundingRatio(im_to_crop);
 
-	
-    //Opening to strenghten the lines again and to fill unwanted gaps
-	Mat im_opened;
-	Mat OpeningElement = getStructuringElement(0, Size(2 * morph_size + 1, 2 * morph_size + 1), Point(morph_size, morph_size));
-	morphologyEx(im_closed, im_opened, 2, OpeningElement);
-
-    //Median filter
-    /*for (int i = 1; i < 3; i = i + 2)
-    {
-        medianBlur(im_out, im_out, i);
-    }*/
-
-	/*int i = rand() % 15000;
-	string path2 = to_string(i);// +"-" + to_string(rectangleToMerge.size());
-	imwrite("../output2/" + path2 + "acrop.png", im_bounding);
-	imwrite("../output2/" + path2 + "bclosed.png", im_closed);
-	imwrite("../output2/" + path2 + "copened.png", im_opened);*/
-	
-	return im_opened;
+	return im_bounding;
 }

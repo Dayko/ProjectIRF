@@ -19,37 +19,6 @@ Mat preProcess(Mat inputImage)
 		medianBlur(im_out, im_out, i);
 	}
 
-	//TODO: Center each figure and normalize scaling?
-
-	//Mat threshold_output;
-	//vector<vector<Point> > contours;
-	//vector<Vec4i> hierarchy;
-
-	//threshold(im_out, threshold_output, 100, 200, CV_THRESH_BINARY_INV);
-
-	//findContours(threshold_output, contours, hierarchy, CV_RETR_EXTERNAL, CV_CHAIN_APPROX_SIMPLE, Point(0, 0));
-	///// Find the rotated rectangles
-	//vector<RotatedRect> minRect(contours.size());
-	//for (int i = 0; i < contours.size(); i++)
-	//{
-	//	minRect[i] = minAreaRect(Mat(contours[i]));
-	//}
-
-	///// Draw contours + rotated rects + ellipses
-	//Mat drawing = Mat::zeros(threshold_output.size(), CV_8UC3);
-	//for (int i = 0; i< contours.size(); i++)
-	//{
-	//	Scalar color = Scalar(0,255,0);
-	//	// contour
-	//	drawContours(drawing, contours, i, color, 1, 8, vector<Vec4i>(), 0, Point());
-	//	// rotated rectangle
-
-	//	Point2f rect_points[4]; minRect[i].points(rect_points);
-
-	//	for (int j = 0; j < 4; j++)
-	//		line(im_out, rect_points[j], rect_points[(j + 1) % 4], color, 1, 8);
-	//}
-
 	return im_out;
 }
 
@@ -59,7 +28,6 @@ void getAllImagettes(string outputPath, Mat inputImage, string inputPaths[], int
 
     Rect rCrop(550, 680, cropWidth, cropHeight);
     Mat imCrop = inputImage(rCrop);
-    //imwrite(outputPath + "_cropped.png", imCrop);
 
     for (int y = 0; y < NBROW; y++)
     {
@@ -89,23 +57,6 @@ void getAllImagettes(string outputPath, Mat inputImage, string inputPaths[], int
                 drawContours(imCanny, contours, i, (0, 255, 255), 2, 8, hierarchy, 0, Point());
             }
             imThumb = imThumb(Rect(maxBoundRect.x + 10, maxBoundRect.y + 10, maxBoundRect.width - 20, maxBoundRect.height - 20));
-
-            // Reduce to the bounding box
-            /*edge = edge(Rect(maxBoundRect.x + 10, maxBoundRect.y + 10, maxBoundRect.width - 20, maxBoundRect.height - 20));
-            imCanny = imCanny(Rect(maxBoundRect.x + 10, maxBoundRect.y + 10, maxBoundRect.width - 20, maxBoundRect.height - 20));
-
-            findContours(edge, contours, hierarchy, CV_RETR_TREE, CV_CHAIN_APPROX_NONE);
-            vector<vector<Point> > contours2_poly(contours.size());
-            maxBoundRect = Rect(0, 0, 0, 0);
-            for (int i = 0; i < contours.size(); i++)
-            {
-                approxPolyDP(Mat(contours[i]), contours2_poly[i], 3, false);
-                boundRect = boundingRect(Mat(contours2_poly[i]));
-                if (boundRect.size().height > maxBoundRect.size().height)
-                    maxBoundRect = boundRect;
-            }
-
-            imThumb = imThumb(maxBoundRect);*/
 
 			//Do some pre-processing
 			imThumb = preProcess(imThumb);
@@ -139,29 +90,6 @@ void getSmallPicRef(Mat src_rot, Mat src_rot_refPic[]){
     cv::Rect myROI(src_rot.cols/16, 3*src_rot.rows/16, src_rot.cols-14*src_rot.cols/16, src_rot.rows-5*src_rot.rows/16);
     splitImage(src_rot(myROI), src_rot_refPic,src_rot(myROI).rows/NBROW);
 }
-
-//void getCorrespondanceToRefPic(Mat reference_Pic_RGB[], Mat src_rot_refPic[], int correspondant_Ref_Pic[]){
-
-//    for(int i=0; i<NBROW; i++){
-//        double minThreshold_forPic=1;
-//        double ThresholdValue;
-//        int closestRefPic=0;
-//        for(int j=0; j<NBICONREF; j++){
-//            // Try to find crosses on the rotated image
-//            Point points[1]; //The two crosses coord.
-//            ThresholdValue = getPointsFromRefImage(reference_Pic_RGB[j], src_rot_refPic[i], points, 1);
-//            //cout << "Threshold for pic " << i << " with " << reference_Pic_Names[i] << " of :" << ThresholdValue << endl;
-//            if(minThreshold_forPic>ThresholdValue){
-//                minThreshold_forPic=ThresholdValue;
-//                closestRefPic = j;
-//                cout << i << j << ThresholdValue << endl;
-//            }
-//        }
-
-//        correspondant_Ref_Pic[i]=closestRefPic;
-
-//    }
-//}
 
 void getCorrespondanceToRefPic(Mat reference_Pic_RGB[], Mat src_rot_refPic[], int correspondant_Ref_Pic[]){
 

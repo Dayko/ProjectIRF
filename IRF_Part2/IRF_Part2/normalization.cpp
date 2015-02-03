@@ -28,9 +28,7 @@ Mat BoundingRatio(Mat inputImage){
         // or it's a wrong box wich result of a remaining border of an imagette. We also check it if the ratio of the box is anormal (too small)
         // We also discard too small rectangles and too big (another check for the whole image bouding box)
 
-        if (/*!((im.size().height - boundRect[i].height) < im.size().height*0.02)
-                && !((im.size().width - boundRect[i].width) < im.size().width*0.02)
-                &&*/ boundRect[i].area() < areaMax && boundRect[i].area() > areaMin
+        if (boundRect[i].area() < areaMax && boundRect[i].area() > areaMin
                 && !(((float)(boundRect[i].height) / (float)(boundRect[i].width)) < 0.05 || ((float)(boundRect[i].width) / (float)(boundRect[i].height)) < 0.05)){
             rectangleToMerge.push_back(boundRect[i]);
         }

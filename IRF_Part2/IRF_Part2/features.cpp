@@ -44,7 +44,7 @@ int featureHistogram(Mat im, float tab[])
 	return 1;
 }
 
-
+// Compute the radio of black on white pixels
 int featureBW(Mat im, float tab[])
 {
 	int limitMin = 250;
@@ -68,7 +68,7 @@ int featureBW(Mat im, float tab[])
 	return 1;
 }
 
-
+// Compute the number of lines and colums with at least 5% of black pixels in it
 int featureNbBlackPixelLinesCols(Mat im, float tab[])
 {
 	float thresholdValue = 0.05;
@@ -118,12 +118,11 @@ int featureNbBlackPixelLinesCols(Mat im, float tab[])
 		}
 	}
 	tab[1] = nbColsBlack / nbColsTotal;
-	//cout << tab[0] << endl;
 
 	return 2;
 }
 
-
+// Compute the number of lines detected by the HoughLines tools
 int featureHoughLines(Mat im, float tab[])
 {
 	double lineMinLength = 40;
@@ -135,12 +134,11 @@ int featureHoughLines(Mat im, float tab[])
 	HoughLines(dst, lines, 1, CV_PI / 180, lineMinLength);
 
 	tab[0] = lines.size();
-	//cout << tab[0] << endl;
 
 	return 1;
 }
 
-
+// Compute the number of circles detected by the HoughCircles tools
 int featureHoughCircles(Mat im, float tab[])
 {
 	double lineMinLength = 40;
@@ -152,12 +150,11 @@ int featureHoughCircles(Mat im, float tab[])
     HoughCircles(im, circles, CV_HOUGH_GRADIENT, 2, im.rows / 4, 100, 20);
 
 	tab[0] = circles.size();
-	//cout << tab[0] << endl;
 
 	return 1;
 }
 
-
+// Compute the number of bounding box which represent the symbol
 int featureBoundingBoxNumber(Mat im, float tab[]){
 	int areaMax = (im.size().height * im.size().width)*(1 - 0.04);
 	int areaMin = areaMax / 70;
@@ -191,26 +188,13 @@ int featureBoundingBoxNumber(Mat im, float tab[]){
 		// If it's approximatly equal to the dimension, in height or width, of the whole image, then it's probably the box of the whole image
 		// or it's a wrong box wich result of a remaining border line of an imagette. We also check it if the ratio of the box is anormal (too small)
 		// We also discard too small rectangles and too big (another check for the whole image bouding box)
-		if (/*!((im.size().height - boundRect[i].height) < im.size().height*0.02)
-				&& !((im.size().width - boundRect[i].width) < im.size().width*0.02)
-				&& */ boundRect[i].area() < areaMax && boundRect[i].area() > areaMin
+		if (boundRect[i].area() < areaMax && boundRect[i].area() > areaMin
 				&& !(((float)(boundRect[i].height) / (float)(boundRect[i].width)) < 0.08 || ((float)(boundRect[i].width) / (float)(boundRect[i].height)) < 0.08)){
 			rectangleToMerge.push_back(boundRect[i]);
 		}
 	}
-
-	/* Impression de des bounding boxes que l'on considère valides */
-	/*for (int i = 0; i < rectangleToMerge.size(); i++){
-	Scalar color = Scalar(0, 255, 0);
-	rectangle(im, rectangleToMerge[i].tl(), rectangleToMerge[i].br(), color, 2, 8, 0);
-	}*/
-	
 	tab[0] = rectangleToMerge.size();
 
-	//Enregistrement de l'image pour observer les résultats
-	/*int i = rand() % 1500;
-	string path2 = to_string(i);// +"-" + to_string(rectangleToMerge.size());
-	imwrite("../output2/" + path2 + ".png", im);*/
 	return 1;
 }
 
@@ -225,14 +209,6 @@ int featureGravityCenter(Mat im, float tab[])
 	std::vector<KeyPoint> keypoints_1;
 
     detector.detect(im, keypoints_1);
-
-	//-- Draw keypoints
-	//Mat img_keypoints_1;
-	//drawKeypoints(input_image, keypoints_1, img_keypoints_1, Scalar::all(-1), DrawMatchesFlags::DEFAULT);
-
-	//-- Show detected (drawn) keypoints
-	//imshow("Keypoints 1", img_keypoints_1);
-	//waitKey(0);
 
 	Point2f cen(0, 0);
 	for (size_t i = 0; i < keypoints_1.size(); i++)
@@ -255,11 +231,10 @@ int featureGravityCenter(Mat im, float tab[])
 	return 2;
 }
 
-
 int featureCannyEdge(Mat im, float tab[])
 {
 	Mat edges;
-	Canny(im, edges, 100, 100 * 3, 3); // Try with another threshold ?
+	Canny(im, edges, 100, 100 * 3, 3);
 
 	vector<std::vector<cv::Point> > contours;
 	vector<cv::Vec4i> hierarchy;
